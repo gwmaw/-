@@ -9,11 +9,12 @@ TEST_GROUPS = {
         "icon": "🫀",
         "color": "#FF6B6B",
         "tests": [
-            "AST", "SGOT", "AST(SGOT)",
-            "ALT", "SGPT", "ALT(SGPT)",
-            "GGT", "γ-GTP", "Gamma-GT",
-            "Total Bilirubin", "T-Bil", "Bilirubin",
-            "ALP", "Alkaline Phosphatase"
+            "AST", "SGOT", "AST(SGOT)", "AST (SGOT)", "간기능(AST)",
+            "ALT", "SGPT", "ALT(SGPT)", "ALT (SGPT)", "간기능(ALT)",
+            "GGT", "γ-GTP", "Gamma-GT", "간기능(γ-GTP)", "γ-GT",
+            "Total Bilirubin", "T-Bil", "Bilirubin", "황달수치", "총빌리루빈",
+            "ALP", "Alkaline Phosphatase", "간기능(ALP)", "알칼리포스파타제",
+            "총단백", "알부민"
         ]
     },
     "kidney": {
@@ -32,7 +33,7 @@ TEST_GROUPS = {
         "icon": "🍬",
         "color": "#FFE66D",
         "tests": [
-            "Glucose", "FBS", "Fasting Glucose", "공복혈당",
+            "Glucose", "FBS", "Fasting Glucose", "공복혈당", "당검사",
             "HbA1c", "Hemoglobin A1c", "당화혈색소"
         ]
     },
@@ -42,8 +43,8 @@ TEST_GROUPS = {
         "color": "#FF8C42",
         "tests": [
             "Total Cholesterol", "T-Chol", "Cholesterol", "총콜레스테롤",
-            "LDL", "LDL-C", "LDL Cholesterol",
-            "HDL", "HDL-C", "HDL Cholesterol",
+            "LDL", "LDL-C", "LDL Cholesterol", "저밀도콜레스테롤",
+            "HDL", "HDL-C", "HDL Cholesterol", "고밀도콜레스테롤",
             "Triglyceride", "TG", "중성지방"
         ]
     },
@@ -54,7 +55,7 @@ TEST_GROUPS = {
         "tests": [
             "WBC", "White Blood Cell", "백혈구",
             "RBC", "Red Blood Cell", "적혈구",
-            "Hemoglobin", "Hgb", "Hb", "혈색소",
+            "Hemoglobin", "Hgb", "Hb", "혈색소", "HB", "헤모글로빈",
             "Hematocrit", "Hct", "헤마토크릿",
             "Platelet", "PLT", "혈소판"
         ]
@@ -74,9 +75,9 @@ TEST_GROUPS = {
         "icon": "💧",
         "color": "#95E1D3",
         "tests": [
-            "Urine Protein", "U-Protein", "단백뇨",
-            "Urine Glucose", "U-Glucose", "당뇨",
-            "Urine Blood", "U-Blood", "잠혈",
+            "Urine Protein", "U-Protein", "단백뇨", "요단백",
+            "Urine Glucose", "U-Glucose", "당뇨", "요당",
+            "Urine Blood", "U-Blood", "잠혈", "요잠혈",
             "pH", "Urine pH"
         ]
     }
@@ -88,16 +89,28 @@ REFERENCE_RANGES = {
     "AST": {"min": 0, "max": 40, "unit": "U/L"},
     "SGOT": {"min": 0, "max": 40, "unit": "U/L"},
     "AST(SGOT)": {"min": 0, "max": 40, "unit": "U/L"},
-    "ALT": {"min": 0, "max": 40, "unit": "U/L"},
-    "SGPT": {"min": 0, "max": 40, "unit": "U/L"},
-    "ALT(SGPT)": {"min": 0, "max": 40, "unit": "U/L"},
-    "GGT": {"min": 0, "max": 60, "unit": "U/L"},
-    "γ-GTP": {"min": 0, "max": 60, "unit": "U/L"},
-    "Gamma-GT": {"min": 0, "max": 60, "unit": "U/L"},
-    "Total Bilirubin": {"min": 0.2, "max": 1.2, "unit": "mg/dL"},
-    "T-Bil": {"min": 0.2, "max": 1.2, "unit": "mg/dL"},
-    "Bilirubin": {"min": 0.2, "max": 1.2, "unit": "mg/dL"},
-    "ALP": {"min": 30, "max": 120, "unit": "U/L"},
+    "AST (SGOT)": {"min": 0, "max": 40, "unit": "IU/L"},
+    "간기능(AST)": {"min": 0, "max": 40, "unit": "U/L"},
+    "ALT": {"min": 0, "max": 41, "unit": "U/L"},
+    "SGPT": {"min": 0, "max": 41, "unit": "U/L"},
+    "ALT(SGPT)": {"min": 0, "max": 41, "unit": "U/L"},
+    "ALT (SGPT)": {"min": 0, "max": 41, "unit": "IU/L"},
+    "간기능(ALT)": {"min": 0, "max": 41, "unit": "U/L"},
+    "GGT": {"min": 6, "max": 42, "unit": "U/L"},
+    "γ-GTP": {"min": 6, "max": 42, "unit": "U/L"},
+    "간기능(γ-GTP)": {"min": 9, "max": 39, "unit": "U/L"},
+    "Gamma-GT": {"min": 6, "max": 42, "unit": "U/L"},
+    "Total Bilirubin": {"min": 0.3, "max": 1.2, "unit": "mg/dL"},
+    "T-Bil": {"min": 0.3, "max": 1.2, "unit": "mg/dL"},
+    "총빌리루빈": {"min": 0.3, "max": 1.2, "unit": "mg/dL"},
+    "황달수치(T-bil)": {"min": 0.3, "max": 1.2, "unit": "mg/dl"},
+    "Bilirubin": {"min": 0.3, "max": 1.2, "unit": "mg/dL"},
+    "ALP": {"min": 35, "max": 240, "unit": "U/L"},
+    "간기능(ALP)": {"min": 0, "max": 240, "unit": "U/L"},
+    "알칼리포스파타제(ALP)": {"min": 35, "max": 104, "unit": "IU/L"},
+    "Alkaline Phosphatase": {"min": 35, "max": 240, "unit": "U/L"},
+    "총단백": {"min": 6.4, "max": 8.3, "unit": "g/dl"},
+    "알부민": {"min": 3.5, "max": 5.2, "unit": "g/dl"},
     "Alkaline Phosphatase": {"min": 30, "max": 120, "unit": "U/L"},
     
     # 신기능
@@ -111,28 +124,32 @@ REFERENCE_RANGES = {
     "UA": {"min": 3.5, "max": 7.0, "unit": "mg/dL"},
     
     # 당뇨
-    "Glucose": {"min": 70, "max": 100, "unit": "mg/dL"},
-    "FBS": {"min": 70, "max": 100, "unit": "mg/dL"},
-    "Fasting Glucose": {"min": 70, "max": 100, "unit": "mg/dL"},
-    "공복혈당": {"min": 70, "max": 100, "unit": "mg/dL"},
+    "Glucose": {"min": 70, "max": 99, "unit": "mg/dL"},
+    "FBS": {"min": 70, "max": 99, "unit": "mg/dL"},
+    "Fasting Glucose": {"min": 70, "max": 99, "unit": "mg/dL"},
+    "공복혈당": {"min": 70, "max": 99, "unit": "mg/dL"},
+    "당검사[화학반응-장비측정][정량]": {"min": 70, "max": 99, "unit": "mg/dL"},
     "HbA1c": {"min": 4.0, "max": 5.6, "unit": "%"},
     "Hemoglobin A1c": {"min": 4.0, "max": 5.6, "unit": "%"},
     "당화혈색소": {"min": 4.0, "max": 5.6, "unit": "%"},
     
     # 지질
-    "Total Cholesterol": {"min": 0, "max": 200, "unit": "mg/dL"},
-    "T-Chol": {"min": 0, "max": 200, "unit": "mg/dL"},
-    "Cholesterol": {"min": 0, "max": 200, "unit": "mg/dL"},
-    "총콜레스테롤": {"min": 0, "max": 200, "unit": "mg/dL"},
+    "Total Cholesterol": {"min": 0, "max": 199, "unit": "mg/dL"},
+    "T-Chol": {"min": 0, "max": 199, "unit": "mg/dL"},
+    "Cholesterol": {"min": 0, "max": 199, "unit": "mg/dL"},
+    "총콜레스테롤": {"min": 0, "max": 199, "unit": "mg/dl"},
     "LDL": {"min": 0, "max": 130, "unit": "mg/dL"},
     "LDL-C": {"min": 0, "max": 130, "unit": "mg/dL"},
     "LDL Cholesterol": {"min": 0, "max": 130, "unit": "mg/dL"},
-    "HDL": {"min": 40, "max": 999, "unit": "mg/dL"},
-    "HDL-C": {"min": 40, "max": 999, "unit": "mg/dL"},
-    "HDL Cholesterol": {"min": 40, "max": 999, "unit": "mg/dL"},
-    "Triglyceride": {"min": 0, "max": 150, "unit": "mg/dL"},
-    "TG": {"min": 0, "max": 150, "unit": "mg/dL"},
-    "중성지방": {"min": 0, "max": 150, "unit": "mg/dL"},
+    "저밀도콜레스테롤": {"min": 0, "max": 130, "unit": "mg/dL"},
+    "HDL": {"min": 60, "max": 999, "unit": "mg/dL"},
+    "HDL-C": {"min": 60, "max": 999, "unit": "mg/dL"},
+    "HDL Cholesterol": {"min": 60, "max": 999, "unit": "mg/dL"},
+    "고밀도콜레스테롤(HDL)": {"min": 60, "max": 999, "unit": "mg/dl"},
+    "Triglyceride": {"min": 0, "max": 149, "unit": "mg/dL"},
+    "TG": {"min": 0, "max": 149, "unit": "mg/dL"},
+    "중성지방(TG)": {"min": 0, "max": 149, "unit": "mg/dl"},
+    "중성지방": {"min": 0, "max": 149, "unit": "mg/dL"},
     
     # 혈액학
     "WBC": {"min": 4.0, "max": 10.0, "unit": "10³/μL"},
@@ -144,6 +161,8 @@ REFERENCE_RANGES = {
     "Hemoglobin": {"min": 12.0, "max": 18.0, "unit": "g/dL"},
     "Hgb": {"min": 12.0, "max": 18.0, "unit": "g/dL"},
     "Hb": {"min": 12.0, "max": 18.0, "unit": "g/dL"},
+    "HB": {"min": 12.0, "max": 17.5, "unit": "g/㎗"},
+    "HB(검진)": {"min": 12.0, "max": 17.5, "unit": "g/㎗"},
     "혈색소": {"min": 12.0, "max": 18.0, "unit": "g/dL"},
     "Hematocrit": {"min": 37.0, "max": 52.0, "unit": "%"},
     "Hct": {"min": 37.0, "max": 52.0, "unit": "%"},
@@ -165,12 +184,15 @@ REFERENCE_RANGES = {
     "Urine Protein": {"value": "Negative", "unit": ""},
     "U-Protein": {"value": "Negative", "unit": ""},
     "단백뇨": {"value": "Negative", "unit": ""},
+    "요단백": {"value": "Negative", "unit": ""},
     "Urine Glucose": {"value": "Negative", "unit": ""},
     "U-Glucose": {"value": "Negative", "unit": ""},
     "당뇨": {"value": "Negative", "unit": ""},
+    "요당": {"value": "Negative", "unit": ""},
     "Urine Blood": {"value": "Negative", "unit": ""},
     "U-Blood": {"value": "Negative", "unit": ""},
     "잠혈": {"value": "Negative", "unit": ""},
+    "요잠혈": {"value": "Negative", "unit": ""},
     "pH": {"min": 5.0, "max": 8.0, "unit": ""},
     "Urine pH": {"min": 5.0, "max": 8.0, "unit": ""},
 }
@@ -206,14 +228,34 @@ def is_abnormal(test_name, value):
         return False
     
     try:
+        # 값 전처리 (특수 기호 제거)
+        value_str = str(value).strip()
+        
+        # 특수 기호가 있으면 이상으로 판단
+        if any(symbol in value_str for symbol in ['▲', '▼', '↑', '↓']):
+            return True
+        
         # 수치형 비교
         if "min" in ref_range and "max" in ref_range:
-            value_num = float(value)
+            # 숫자만 추출
+            import re
+            value_clean = re.sub(r'[^0-9.]', '', value_str)
+            if not value_clean:
+                return False
+            value_num = float(value_clean)
             return value_num < ref_range["min"] or value_num > ref_range["max"]
         
         # 문자형 비교 (Negative 등)
         if "value" in ref_range:
-            return str(value).strip().lower() != str(ref_range["value"]).lower()
+            value_lower = value_str.lower()
+            ref_lower = str(ref_range["value"]).lower()
+            # - 또는 negative는 정상
+            if value_lower in ['-', 'negative', 'neg']:
+                return ref_lower not in ['-', 'negative', 'neg']
+            # + 또는 positive는 이상
+            if value_lower in ['+', 'positive', 'pos', 'trace']:
+                return True
+            return value_lower != ref_lower
     except (ValueError, TypeError):
         return False
     
@@ -227,7 +269,20 @@ def get_abnormal_direction(test_name, value):
         return None
     
     try:
-        value_num = float(value)
+        # 특수 기호 확인
+        value_str = str(value).strip()
+        if '▲' in value_str or '↑' in value_str:
+            return "high"
+        if '▼' in value_str or '↓' in value_str:
+            return "low"
+        
+        # 숫자만 추출
+        import re
+        value_clean = re.sub(r'[^0-9.]', '', value_str)
+        if not value_clean:
+            return None
+        
+        value_num = float(value_clean)
         if value_num < ref_range["min"]:
             return "low"
         elif value_num > ref_range["max"]:
