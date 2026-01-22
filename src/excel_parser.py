@@ -132,6 +132,26 @@ class ExcelParser:
                 result_clean = ''
                 result_value = ''
             
+            # 4. HbA1c 관련 항목 필터링
+            # HbA1c-IFCC, HbA1c-eAG, 헤모글로빈A1C 항목은 제외
+            skip_tests = [
+                'HbA1c-IFCC', 'HbA1c-eAG', 
+                '헤모글로빈A1C', 'Hemoglobin A1C',
+                '염증수치', 'CRP',
+                '통풍수치', '요산', 'Uric Acid', 'uric acid'
+            ]
+            
+            should_skip = False
+            for skip_term in skip_tests:
+                if skip_term.lower() in test_name.lower():
+                    # 단, HbA1c-NGSP는 포함
+                    if 'NGSP' not in test_name:
+                        should_skip = True
+                        break
+            
+            if should_skip:
+                continue  # 이 항목은 건너뜀
+            
             # 검사 데이터 저장
             test = {
                 'name': test_name,

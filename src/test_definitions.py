@@ -22,10 +22,9 @@ TEST_GROUPS = {
         "icon": "🫘",
         "color": "#4ECDC4",
         "tests": [
-            "BUN", "Blood Urea Nitrogen",
-            "Creatinine", "Cr",
-            "eGFR", "GFR",
-            "Uric Acid", "UA", "통풍수치", "요산"
+            "BUN", "Blood Urea Nitrogen", "신장기능(BUN)",
+            "Creatinine", "Cr", "신장기능(Cr)",
+            "eGFR", "GFR", "사구체여과율", "사구체 여과율"
         ]
     },
     "diabetes": {
@@ -35,7 +34,7 @@ TEST_GROUPS = {
         "tests": [
             "Glucose", "FBS", "Fasting Glucose", "공복혈당", "당검사",
             "HbA1c", "Hemoglobin A1c", "당화혈색소",
-            "HbA1c-NGSP", "HbA1c-IFCC", "HbA1c-eAG"
+            "HbA1c-NGSP"
         ]
     },
     "lipid": {
@@ -57,7 +56,7 @@ TEST_GROUPS = {
             "WBC", "White Blood Cell", "백혈구", "백혈구수",
             "RBC", "Red Blood Cell", "적혈구", "적혈구수",
             "Hemoglobin", "Hgb", "Hb", "혈색소", "HB", "헤모글로빈", "빈혈수치",
-            "Hematocrit", "Hct", "헤마토크릿",
+            "Hematocrit", "Hct", "헤마토크릿", "헤마토크리트",
             "Platelet", "PLT", "혈소판", "혈소판수",
             "MCV", "MCH", "MCHC",
             "Seg.Neutrophil", "Lymphocyte", "Monocyte", "Eosinophil", "Basophil"
