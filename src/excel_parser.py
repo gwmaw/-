@@ -52,12 +52,15 @@ class ExcelParser:
         # 가능한 컬럼명 패턴
         test_name_cols = self._find_column(df, ['검사항목', '항목', 'test', 'name', '검사명', 'item', '처방명', '처방'])
         result_cols = self._find_column(df, ['결과', 'result', 'value', '값', '측정값'])
-        unit_cols = self._find_column(df, ['단위', 'unit', 'units'])
+        
+        # 단위는 항상 3번째 열(C열, 인덱스 2)에서 읽기
+        unit_cols = df.columns[2] if len(df.columns) > 2 else None
+        
         ref_cols = self._find_column(df, ['정상범위', '참고치', 'reference', 'ref', 'range', 'normal'])
         
         # 결과 컬럼이 없으면 날짜 컬럼을 찾기 (YYYY-MM-DD 형식)
+        # 가장 왼쪽(최신) 날짜 컬럼 찾기
         if result_cols is None:
-            # 날짜 형식 컬럼 찾기
             date_pattern = r'\d{4}-\d{2}-\d{2}'
             for col in df.columns:
                 if re.match(date_pattern, str(col)):
@@ -95,6 +98,10 @@ class ExcelParser:
             else:
                 result_value = str(result_value).strip()
             
+            # 🚨 최신 검사일에 결과값이 없으면 이 검사를 제외
+            if not result_value or result_value == '' or result_value.lower() == 'nan':
+                continue  # 이 검사는 리포트에 포함하지 않음
+            
             # 특수 기호 제거 및 처리 (▲, ▼ 등)
             original_result = result_value
             result_clean = re.sub(r'[▲▼()（）]', '', result_value).strip()
@@ -114,6 +121,10 @@ class ExcelParser:
                 # NaN 문자열 제거
                 if reference.lower() == 'nan':
                     reference = ''
+            
+            # 🔧 간기능(γ-GTP) 참고치 수정: 11 ~ 61
+            if 'γ-GTP' in test_name or 'GTP' in test_name.upper():
+                reference = '11 ~ 61'
             
             # 특정 항목의 긴 결과값 정리
             # 1. 백혈구백분율: 결과값이 세부 항목들로 구성되어 있으면 제거
