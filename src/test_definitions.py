@@ -6,7 +6,7 @@
 TEST_GROUPS = {
     "liver": {
         "name": "간기능 검사",
-        "icon": "🫀",
+        "icon": "[간]",
         "color": "#FF6B6B",
         "tests": [
             "AST", "SGOT", "AST(SGOT)", "AST (SGOT)", "간기능(AST)",
@@ -19,7 +19,7 @@ TEST_GROUPS = {
     },
     "kidney": {
         "name": "신기능 검사",
-        "icon": "🫘",
+        "icon": "[신]",
         "color": "#4ECDC4",
         "tests": [
             "BUN", "Blood Urea Nitrogen", "신장기능(BUN)",
@@ -29,7 +29,7 @@ TEST_GROUPS = {
     },
     "diabetes": {
         "name": "당뇨 검사",
-        "icon": "🍬",
+        "icon": "[당]",
         "color": "#FFE66D",
         "tests": [
             "Glucose", "FBS", "Fasting Glucose", "공복혈당", "당검사",
@@ -39,7 +39,7 @@ TEST_GROUPS = {
     },
     "lipid": {
         "name": "지질 검사",
-        "icon": "🧈",
+        "icon": "[지]",
         "color": "#FF8C42",
         "tests": [
             "Total Cholesterol", "T-Chol", "Cholesterol", "총콜레스테롤",
@@ -50,7 +50,7 @@ TEST_GROUPS = {
     },
     "blood": {
         "name": "혈액학 검사",
-        "icon": "🩸",
+        "icon": "[혈]",
         "color": "#C44569",
         "tests": [
             "WBC", "White Blood Cell", "백혈구", "백혈구수",
@@ -64,7 +64,7 @@ TEST_GROUPS = {
     },
     "thyroid": {
         "name": "갑상선 검사",
-        "icon": "🦋",
+        "icon": "[갑]",
         "color": "#A8E6CF",
         "tests": [
             "TSH", "Thyroid Stimulating Hormone", "갑상선자극호르몬",
@@ -74,7 +74,7 @@ TEST_GROUPS = {
     },
     "electrolyte": {
         "name": "전해질 검사",
-        "icon": "⚡",
+        "icon": "[전]",
         "color": "#FFB6C1",
         "tests": [
             "나트륨", "Sodium", "Na",
@@ -86,7 +86,7 @@ TEST_GROUPS = {
     },
     "urine": {
         "name": "소변 검사",
-        "icon": "💧",
+        "icon": "[소]",
         "color": "#95E1D3",
         "tests": [
             # 요일반검사 항목들
