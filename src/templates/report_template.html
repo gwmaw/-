@@ -191,7 +191,7 @@
         
         /* 검사 그룹 - 플랫 */
         .test-group {
-            margin: 0 20px 10px 20px;
+            margin: 0 20px 16px 20px;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
@@ -283,6 +283,14 @@
             font-size: 15px;
             font-weight: 600;
             line-height: 1.3;
+        }
+        
+        /* 단위가 없는 결과값(영어)은 더 작고 가볍게 */
+        .test-result:not(:has(.test-unit)) {
+            font-size: 13px;
+            font-weight: 400;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            letter-spacing: 0.3px;
         }
         
         .test-result.abnormal {
