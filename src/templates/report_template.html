@@ -522,9 +522,11 @@
             
             <div class="test-table">
                 {% for test in group_data.tests %}
+                {% set result_str = test.result|string|upper %}
+                {% set is_text = 'NEGATIVE' in result_str or 'POSITIVE' in result_str or 'TRACE' in result_str or 'NOT FOUND' in result_str or 'NORMAL' in result_str or 'ABNORMAL' in result_str %}
                 <div class="test-row {% if test.is_abnormal %}abnormal{% endif %}">
                     <div class="test-name">{{ test.name }}</div>
-                    <div class="test-result {% if test.is_abnormal %}abnormal{% else %}normal{% endif %} {% if not test.unit or test.unit == '' %}text-result{% endif %}">
+                    <div class="test-result {% if test.is_abnormal %}abnormal{% else %}normal{% endif %} {% if is_text %}text-result{% endif %}">
                         {{ test.result }}
                         {% if test.unit and test.unit != '' %}
                         <span class="test-unit">{{ test.unit }}</span>
