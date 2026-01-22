@@ -15,12 +15,17 @@ class ReportGenerator:
         self.template_dir = template_dir
         self.env = Environment(loader=FileSystemLoader(template_dir))
     
-    def generate_html(self, data, doctor_comment=''):
+    def generate_html(self, data, doctor_comment='', logo_path=''):
         """HTML 리포트 생성"""
         template = self.env.get_template('report_template.html')
         
         # 현재 날짜/시간
         now = datetime.now()
+        
+        # 로고 경로가 없으면 기본 경로 사용
+        if not logo_path:
+            logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                                    'assets', 'hospital_logo.png')
         
         # 템플릿 데이터 준비
         template_data = {
@@ -34,7 +39,8 @@ class ReportGenerator:
             'grouped_tests': data['grouped_tests'],
             'summary': data['summary'],
             'recommendations': data.get('recommendations', []),
-            'doctor_comment': doctor_comment
+            'doctor_comment': doctor_comment,
+            'logo_path': logo_path
         }
         
         html_content = template.render(**template_data)
@@ -168,6 +174,10 @@ def generate_report(analysis_data, patient_info, doctor_comment='',
     # 템플릿 디렉토리
     template_dir = os.path.join(os.path.dirname(__file__), 'templates')
     
+    # 로고 경로
+    logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                            'assets', 'hospital_logo.png')
+    
     # 리포트 생성기 초기화
     generator = ReportGenerator(template_dir)
     
@@ -180,7 +190,7 @@ def generate_report(analysis_data, patient_info, doctor_comment='',
     }
     
     # HTML 생성
-    html_content = generator.generate_html(report_data, doctor_comment)
+    html_content = generator.generate_html(report_data, doctor_comment, logo_path)
     
     # 출력 디렉토리 생성
     os.makedirs(output_dir, exist_ok=True)
