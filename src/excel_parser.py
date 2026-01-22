@@ -71,6 +71,9 @@ class ExcelParser:
             raise ValueError("필수 컬럼(결과/날짜)을 찾을 수 없습니다.")
         
         # 각 행에서 검사 데이터 추출
+        in_urine_section = False  # 소변검사 섹션 플래그
+        in_urine_sediment_section = False  # 요침사검사 섹션 플래그
+        
         for idx, row in df.iterrows():
             test_name = str(row[test_name_cols]).strip()
             result_value = row[result_cols]
@@ -78,6 +81,13 @@ class ExcelParser:
             # 빈 행이나 헤더 행 건너뛰기
             if pd.isna(test_name) or test_name == '' or test_name.lower() in ['nan', 'none']:
                 continue
+            
+            # 소변검사 섹션 감지
+            if '요 일반검사' in test_name or '요일반검사' in test_name:
+                in_urine_section = True
+            elif '요침사검사' in test_name:
+                in_urine_sediment_section = True
+                in_urine_section = False  # 요침사로 전환
             
             # 결과값 정리
             if pd.isna(result_value):
@@ -105,6 +115,23 @@ class ExcelParser:
                 if reference.lower() == 'nan':
                     reference = ''
             
+            # 특정 항목의 긴 결과값 정리
+            # 1. 백혈구백분율: 결과값이 세부 항목들로 구성되어 있으면 제거
+            if '백혈구백분율' in test_name:
+                # 세부 항목들이 아래에 있으므로 이 항목은 빈 결과로 표시하지 않음
+                result_clean = ''
+                result_value = ''
+            
+            # 2. 요일반검사: 결과값이 길면 제거 (세부 항목들이 아래에 있음)
+            if '요 일반검사' in test_name or '요일반검사' in test_name:
+                result_clean = ''
+                result_value = ''
+            
+            # 3. 요침사검사: 결과값이 길면 제거 (세부 항목들이 아래에 있음)
+            if '요침사검사' in test_name:
+                result_clean = ''
+                result_value = ''
+            
             # 검사 데이터 저장
             test = {
                 'name': test_name,
@@ -113,6 +140,10 @@ class ExcelParser:
                 'reference': reference,
                 'original_result': original_result  # 원본 결과 저장
             }
+            
+            # 소변검사 섹션에 있으면 category_hint 추가
+            if in_urine_section or in_urine_sediment_section:
+                test['category_hint'] = 'urine'
             
             tests.append(test)
         

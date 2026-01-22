@@ -47,34 +47,48 @@ class ReportGenerator:
         return output_path
     
     def generate_pdf(self, html_content, output_path):
-        """PDF 생성"""
+        """PDF 생성 - WeasyPrint를 사용한 한글 지원"""
         try:
-            from xhtml2pdf import pisa
+            # WeasyPrint 사용 (최신 버전, 한글 폰트 자동 임베딩)
+            from weasyprint import HTML
             
-            # PDF 파일 생성
-            with open(output_path, "wb") as pdf_file:
-                # HTML을 PDF로 변환
-                pisa_status = pisa.CreatePDF(
-                    html_content.encode('utf-8'),
-                    dest=pdf_file,
-                    encoding='utf-8'
-                )
-                
-                if pisa_status.err:
-                    raise Exception("PDF 변환 중 오류 발생")
+            # HTML 문자열에서 직접 PDF 생성
+            HTML(string=html_content).write_pdf(output_path)
             
-            return output_path
-        except ImportError:
-            # xhtml2pdf가 없으면 HTML 저장
-            html_path = output_path.replace('.pdf', '.html')
-            with open(html_path, 'w', encoding='utf-8') as f:
-                f.write(html_content)
-            return html_path
+            # 생성 성공 확인
+            if os.path.exists(output_path):
+                file_size = os.path.getsize(output_path)
+                print(f"✅ PDF 생성 성공: {output_path} ({file_size:,} bytes)")
+                return output_path
+            else:
+                raise Exception("PDF 파일이 생성되지 않았습니다.")
+            
+        except ImportError as e:
+            # WeasyPrint가 설치되지 않은 경우
+            error_msg = (
+                "WeasyPrint가 설치되지 않았습니다. "
+                "다음 명령어로 설치하세요: pip install weasyprint"
+            )
+            print(f"❌ {error_msg}")
+            raise Exception(error_msg)
+            
         except Exception as e:
-            # 오류 발생 시 상세 정보 출력
+            # 기타 오류 발생 시
             import traceback
+            print(f"❌ PDF 생성 오류:")
             traceback.print_exc()
-            raise Exception(f"PDF 생성 오류: {str(e)}")
+            
+            # HTML 파일로라도 저장
+            html_path = output_path.replace('.pdf', '.html')
+            try:
+                with open(html_path, 'w', encoding='utf-8') as f:
+                    f.write(html_content)
+                print(f"💾 대체 출력: HTML 파일 저장됨 - {html_path}")
+                print(f"   브라우저에서 열어 PDF로 인쇄하세요.")
+            except:
+                pass
+            
+            raise Exception(f"PDF 생성 실패: {str(e)}")
     
     def generate_png(self, html_content, output_path, width=800):
         """PNG 이미지 생성"""

@@ -49,8 +49,15 @@ class ReportAnalyzer:
         for test in self.tests:
             analyzed_test = self._analyze_test(test)
             
-            # 그룹 찾기
-            group_key = find_test_group(test['name'])
+            # 그룹 찾기 (category_hint 우선 사용)
+            group_key = None
+            if 'category_hint' in test:
+                group_key = test['category_hint']
+            
+            # category_hint가 없으면 이름으로 찾기
+            if group_key is None:
+                group_key = find_test_group(test['name'])
+            
             if group_key is None:
                 group_key = 'other'
             
@@ -95,12 +102,17 @@ class ReportAnalyzer:
             unit = ref_range.get('unit', '')
         
         # 참조 범위 문자열 생성
-        reference_str = test.get('reference', '')
-        if not reference_str and ref_range:
+        # 우선순위: 우리가 정의한 간소화된 참조 범위 > 엑셀 파일의 참조 범위
+        reference_str = ''
+        if ref_range:
             if 'min' in ref_range and 'max' in ref_range:
                 reference_str = f"{ref_range['min']} - {ref_range['max']}"
             elif 'value' in ref_range:
                 reference_str = ref_range['value']
+        
+        # 참조 범위가 없으면 엑셀 파일의 값 사용
+        if not reference_str:
+            reference_str = test.get('reference', '')
         
         return {
             'name': test_name,

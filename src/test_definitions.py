@@ -34,7 +34,8 @@ TEST_GROUPS = {
         "color": "#FFE66D",
         "tests": [
             "Glucose", "FBS", "Fasting Glucose", "공복혈당", "당검사",
-            "HbA1c", "Hemoglobin A1c", "당화혈색소"
+            "HbA1c", "Hemoglobin A1c", "당화혈색소",
+            "HbA1c-NGSP", "HbA1c-IFCC", "HbA1c-eAG"
         ]
     },
     "lipid": {
@@ -67,9 +68,21 @@ TEST_GROUPS = {
         "icon": "🦋",
         "color": "#A8E6CF",
         "tests": [
-            "TSH", "Thyroid Stimulating Hormone",
-            "Free T4", "FT4", "Free Thyroxine",
-            "Free T3", "FT3"
+            "TSH", "Thyroid Stimulating Hormone", "갑상선자극호르몬",
+            "Free T4", "FT4", "Free Thyroxine", "갑상선호르몬[Free T4]",
+            "Free T3", "FT3", "갑상선호르몬[T3]", "T3"
+        ]
+    },
+    "electrolyte": {
+        "name": "전해질 검사",
+        "icon": "⚡",
+        "color": "#FFB6C1",
+        "tests": [
+            "나트륨", "Sodium", "Na",
+            "염소", "Chloride", "Cl",
+            "칼륨", "Potassium", "K",
+            "칼슘", "Calcium", "Ca",
+            "마그네슘", "Magnesium", "Mg"
         ]
     },
     "urine": {
@@ -77,10 +90,25 @@ TEST_GROUPS = {
         "icon": "💧",
         "color": "#95E1D3",
         "tests": [
-            "Urine Protein", "U-Protein", "단백뇨", "요단백",
-            "Urine Glucose", "U-Glucose", "당뇨", "요당",
-            "Urine Blood", "U-Blood", "잠혈", "요잠혈",
-            "pH", "Urine pH"
+            # 요일반검사 항목들
+            "요 일반검사", "Leukocyte esterase", "Leukocyte", "백혈구",
+            "Nitrite", "아질산염",
+            "Protein", "단백", "요단백", "Urine Protein", "U-Protein", "단백뇨",
+            "Glucose", "당", "요당", "Urine Glucose", "U-Glucose",
+            "Ketone", "케톤", "케톤체",
+            "Urobilinogen", "유로빌리노겐",
+            "Bilirubin", "빌리루빈", "요빌리루빈",
+            "Blood", "잠혈", "요잠혈", "Urine Blood", "U-Blood", "Occult Blood",
+            "pH", "Urine pH", "수소이온농도",
+            "Specific Gravity", "S.G", "비중",
+            # 요침사검사 항목들
+            "요침사검사", "RBC", "적혈구",
+            "WBC", "백혈구",
+            "Epi.cell", "Epithelial cell", "상피세포",
+            "Casts", "원주", "Cast",
+            "bacteria", "Bacteria", "세균",
+            "Crystals", "결정체", "결정",
+            "Others", "기타"
         ]
     }
 }
@@ -136,6 +164,9 @@ REFERENCE_RANGES = {
     "HbA1c": {"min": 4.0, "max": 5.6, "unit": "%"},
     "Hemoglobin A1c": {"min": 4.0, "max": 5.6, "unit": "%"},
     "당화혈색소": {"min": 4.0, "max": 5.6, "unit": "%"},
+    "HbA1c-NGSP": {"min": 4.0, "max": 5.6, "unit": "%"},
+    "HbA1c-IFCC": {"min": 20, "max": 42, "unit": "mmol/mol"},
+    "HbA1c-eAG": {"min": 70, "max": 120, "unit": "mg/dL"},
     
     # 지질
     "Total Cholesterol": {"min": 0, "max": 199, "unit": "mg/dL"},
@@ -156,6 +187,23 @@ REFERENCE_RANGES = {
     "중성지방(TG)": {"min": 0, "max": 149, "unit": "mg/dl"},
     "중성지방": {"min": 0, "max": 149, "unit": "mg/dL"},
     "저밀도콜레스테롤(LDL)": {"min": 0, "max": 129, "unit": "mg/dL"},
+    
+    # 전해질
+    "나트륨": {"min": 136, "max": 145, "unit": "mmol/L"},
+    "Sodium": {"min": 136, "max": 145, "unit": "mmol/L"},
+    "Na": {"min": 136, "max": 145, "unit": "mmol/L"},
+    "염소": {"min": 98, "max": 107, "unit": "mmol/L"},
+    "Chloride": {"min": 98, "max": 107, "unit": "mmol/L"},
+    "Cl": {"min": 98, "max": 107, "unit": "mmol/L"},
+    "칼륨": {"min": 3.5, "max": 5.1, "unit": "mmol/L"},
+    "Potassium": {"min": 3.5, "max": 5.1, "unit": "mmol/L"},
+    "K": {"min": 3.5, "max": 5.1, "unit": "mmol/L"},
+    "칼슘": {"min": 8.5, "max": 10.5, "unit": "mg/dL"},
+    "Calcium": {"min": 8.5, "max": 10.5, "unit": "mg/dL"},
+    "Ca": {"min": 8.5, "max": 10.5, "unit": "mg/dL"},
+    "마그네슘": {"min": 1.7, "max": 2.3, "unit": "mg/dL"},
+    "Magnesium": {"min": 1.7, "max": 2.3, "unit": "mg/dL"},
+    "Mg": {"min": 1.7, "max": 2.3, "unit": "mg/dL"},
     
     # 혈액학
     "WBC": {"min": 4.0, "max": 10.0, "unit": "10³/μL"},
@@ -203,21 +251,63 @@ REFERENCE_RANGES = {
     "Free T3": {"min": 2.3, "max": 4.2, "unit": "pg/mL"},
     "FT3": {"min": 2.3, "max": 4.2, "unit": "pg/mL"},
     
-    # 소변
+    # 소변 검사
+    # 요일반검사 항목들
+    "Leukocyte esterase": {"value": "Negative", "unit": ""},
+    "Leukocyte": {"min": 1.003, "max": 1.035, "unit": ""},
+    "Nitrite": {"value": "Negative", "unit": ""},
+    "아질산염": {"value": "Negative", "unit": ""},
+    "Protein": {"value": "Negative", "unit": ""},
+    "단백": {"value": "Negative", "unit": ""},
     "Urine Protein": {"value": "Negative", "unit": ""},
     "U-Protein": {"value": "Negative", "unit": ""},
     "단백뇨": {"value": "Negative", "unit": ""},
     "요단백": {"value": "Negative", "unit": ""},
+    "Glucose": {"min": 5.0, "max": 8.5, "unit": ""},
+    "당": {"value": "Negative", "unit": ""},
     "Urine Glucose": {"value": "Negative", "unit": ""},
     "U-Glucose": {"value": "Negative", "unit": ""},
     "당뇨": {"value": "Negative", "unit": ""},
     "요당": {"value": "Negative", "unit": ""},
+    "Ketone": {"value": "Negative", "unit": ""},
+    "케톤": {"value": "Negative", "unit": ""},
+    "케톤체": {"value": "Negative", "unit": ""},
+    "Urobilinogen": {"value": "Trace", "unit": ""},  # Trace는 정상
+    "유로빌리노겐": {"value": "Trace", "unit": ""},
+    "Bilirubin": {"value": "Negative", "unit": ""},
+    "빌리루빈": {"value": "Negative", "unit": ""},
+    "요빌리루빈": {"value": "Negative", "unit": ""},
+    "Blood": {"value": "Negative", "unit": ""},
+    "잠혈": {"value": "Negative", "unit": ""},
     "Urine Blood": {"value": "Negative", "unit": ""},
     "U-Blood": {"value": "Negative", "unit": ""},
-    "잠혈": {"value": "Negative", "unit": ""},
     "요잠혈": {"value": "Negative", "unit": ""},
-    "pH": {"min": 5.0, "max": 8.0, "unit": ""},
-    "Urine pH": {"min": 5.0, "max": 8.0, "unit": ""},
+    "Occult Blood": {"value": "Negative", "unit": ""},
+    "pH": {"min": 5.0, "max": 8.5, "unit": ""},
+    "Urine pH": {"min": 5.0, "max": 8.5, "unit": ""},
+    "수소이온농도": {"min": 5.0, "max": 8.5, "unit": ""},
+    "Specific Gravity": {"min": 1.003, "max": 1.035, "unit": ""},
+    "S.G": {"min": 1.003, "max": 1.035, "unit": ""},
+    "비중": {"min": 1.003, "max": 1.035, "unit": ""},
+    # 요침사검사 항목들
+    "RBC": {"min": 0, "max": 2, "unit": "H.P.F"},
+    "적혈구": {"min": 0, "max": 2, "unit": "H.P.F"},
+    "WBC": {"min": 0, "max": 2, "unit": "H.P.F"},
+    "백혈구": {"min": 0, "max": 2, "unit": "H.P.F"},
+    "Epi.cell": {"min": 0, "max": 2, "unit": "H.P.F"},
+    "Epithelial cell": {"min": 0, "max": 2, "unit": "H.P.F"},
+    "상피세포": {"min": 0, "max": 2, "unit": "H.P.F"},
+    "Casts": {"value": "Not Found", "unit": "L.P.F"},
+    "원주": {"value": "Not Found", "unit": "L.P.F"},
+    "Cast": {"value": "Not Found", "unit": "L.P.F"},
+    "bacteria": {"value": "Not Found", "unit": "H.P.F"},
+    "Bacteria": {"value": "Not Found", "unit": "H.P.F"},
+    "세균": {"value": "Not Found", "unit": "H.P.F"},
+    "Crystals": {"value": "Not Found", "unit": "H.P.F"},
+    "결정체": {"value": "Not Found", "unit": "H.P.F"},
+    "결정": {"value": "Not Found", "unit": "H.P.F"},
+    "Others": {"value": "Not Found", "unit": "H.P.F"},
+    "기타": {"value": "Not Found", "unit": "H.P.F"},
 }
 
 

@@ -190,6 +190,24 @@
             align-items: center;
         }
         
+        /* 소변검사 그룹의 행 간격 축소 */
+        .test-group.urine-group .test-row {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+        
+        .test-group.urine-group .test-name {
+            font-size: 13px;
+        }
+        
+        .test-group.urine-group .test-result {
+            font-size: 14px;
+        }
+        
+        .test-group.urine-group .test-reference {
+            font-size: 12px;
+        }
+        
         .test-row:last-child {
             border-bottom: none;
         }
@@ -413,7 +431,7 @@
         
         <!-- 검사 결과 그룹 -->
         {% for group_key, group_data in grouped_tests.items() %}
-        <div class="test-group">
+        <div class="test-group {% if group_key == 'urine' %}urine-group{% endif %}">
             <div class="group-header" style="border-left-color: {{ group_data.info.color }};">
                 <span class="group-icon">{{ group_data.info.icon }}</span>
                 <span class="group-title">{{ group_data.info.name }}</span>
