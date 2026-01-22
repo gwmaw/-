@@ -25,7 +25,7 @@ TEST_GROUPS = {
             "BUN", "Blood Urea Nitrogen",
             "Creatinine", "Cr",
             "eGFR", "GFR",
-            "Uric Acid", "UA"
+            "Uric Acid", "UA", "통풍수치", "요산"
         ]
     },
     "diabetes": {
@@ -53,11 +53,13 @@ TEST_GROUPS = {
         "icon": "🩸",
         "color": "#C44569",
         "tests": [
-            "WBC", "White Blood Cell", "백혈구",
-            "RBC", "Red Blood Cell", "적혈구",
-            "Hemoglobin", "Hgb", "Hb", "혈색소", "HB", "헤모글로빈",
+            "WBC", "White Blood Cell", "백혈구", "백혈구수",
+            "RBC", "Red Blood Cell", "적혈구", "적혈구수",
+            "Hemoglobin", "Hgb", "Hb", "혈색소", "HB", "헤모글로빈", "빈혈수치",
             "Hematocrit", "Hct", "헤마토크릿",
-            "Platelet", "PLT", "혈소판"
+            "Platelet", "PLT", "혈소판", "혈소판수",
+            "MCV", "MCH", "MCHC",
+            "Seg.Neutrophil", "Lymphocyte", "Monocyte", "Eosinophil", "Basophil"
         ]
     },
     "thyroid": {
@@ -122,6 +124,8 @@ REFERENCE_RANGES = {
     "GFR": {"min": 90, "max": 999, "unit": "mL/min/1.73m²"},
     "Uric Acid": {"min": 3.5, "max": 7.0, "unit": "mg/dL"},
     "UA": {"min": 3.5, "max": 7.0, "unit": "mg/dL"},
+    "통풍수치-요산(uric acid)": {"min": 3.4, "max": 7.0, "unit": "mg/dL"},
+    "염증수치(CRP)": {"min": 0.0, "max": 0.5, "unit": "mg/dL"},
     
     # 당뇨
     "Glucose": {"min": 70, "max": 99, "unit": "mg/dL"},
@@ -148,23 +152,42 @@ REFERENCE_RANGES = {
     "고밀도콜레스테롤(HDL)": {"min": 60, "max": 999, "unit": "mg/dl"},
     "Triglyceride": {"min": 0, "max": 149, "unit": "mg/dL"},
     "TG": {"min": 0, "max": 149, "unit": "mg/dL"},
+    "TG(중성지방)": {"min": 0, "max": 149, "unit": "mg/dL"},
     "중성지방(TG)": {"min": 0, "max": 149, "unit": "mg/dl"},
     "중성지방": {"min": 0, "max": 149, "unit": "mg/dL"},
+    "저밀도콜레스테롤(LDL)": {"min": 0, "max": 129, "unit": "mg/dL"},
     
     # 혈액학
     "WBC": {"min": 4.0, "max": 10.0, "unit": "10³/μL"},
     "White Blood Cell": {"min": 4.0, "max": 10.0, "unit": "10³/μL"},
     "백혈구": {"min": 4.0, "max": 10.0, "unit": "10³/μL"},
+    "백혈구수": {"min": 4.0, "max": 10.0, "unit": "*10^3/㎕"},
     "RBC": {"min": 4.2, "max": 6.0, "unit": "10⁶/μL"},
     "Red Blood Cell": {"min": 4.2, "max": 6.0, "unit": "10⁶/μL"},
     "적혈구": {"min": 4.2, "max": 6.0, "unit": "10⁶/μL"},
+    "적혈구수": {"min": 4.5, "max": 6.5, "unit": "*10^6/㎕"},
     "Hemoglobin": {"min": 12.0, "max": 18.0, "unit": "g/dL"},
     "Hgb": {"min": 12.0, "max": 18.0, "unit": "g/dL"},
     "Hb": {"min": 12.0, "max": 18.0, "unit": "g/dL"},
     "HB": {"min": 12.0, "max": 17.5, "unit": "g/㎗"},
     "HB(검진)": {"min": 12.0, "max": 17.5, "unit": "g/㎗"},
+    "빈혈수치(Hb)": {"min": 13.0, "max": 17.5, "unit": "g/㎗"},
     "혈색소": {"min": 12.0, "max": 18.0, "unit": "g/dL"},
     "Hematocrit": {"min": 37.0, "max": 52.0, "unit": "%"},
+    "Hct": {"min": 37.0, "max": 52.0, "unit": "%"},
+    "헤마토크릿": {"min": 38.0, "max": 54.0, "unit": "%"},
+    "Platelet": {"min": 150, "max": 400, "unit": "10³/μL"},
+    "PLT": {"min": 150, "max": 400, "unit": "10³/μL"},
+    "혈소판": {"min": 150, "max": 400, "unit": "10³/μL"},
+    "혈소판수(PLT)": {"min": 140, "max": 400, "unit": "*10^3/㎕"},
+    "MCV": {"min": 82.0, "max": 105.0, "unit": "fL"},
+    "MCH": {"min": 26.0, "max": 33.0, "unit": "pg"},
+    "MCHC": {"min": 29.0, "max": 36.0, "unit": "g/㎗"},
+    "Seg.Neutrophil": {"min": 40.0, "max": 75.0, "unit": "%"},
+    "Lymphocyte": {"min": 20.0, "max": 45.0, "unit": "%"},
+    "Monocyte": {"min": 2.0, "max": 10.0, "unit": "%"},
+    "Eosinophil": {"min": 0.0, "max": 6.0, "unit": "%"},
+    "Basophil": {"min": 0.0, "max": 2.0, "unit": "%"},
     "Hct": {"min": 37.0, "max": 52.0, "unit": "%"},
     "헤마토크릿": {"min": 37.0, "max": 52.0, "unit": "%"},
     "Platelet": {"min": 150, "max": 400, "unit": "10³/μL"},
