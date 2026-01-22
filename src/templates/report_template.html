@@ -12,9 +12,9 @@
         }
         
         body {
-            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
-            background-color: #f5f5f5;  /* 회색 배경 */
-            line-height: 1.6;
+            font-family: 'Segoe UI', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.7;
             color: #333;
         }
         
@@ -34,50 +34,77 @@
         .report-header {
             margin: 0 20px 20px 20px;
             background: white;
-            padding: 30px 30px 20px 30px;
+            padding: 35px 40px 25px 40px;
             text-align: center;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 3px 10px rgba(0, 0, 0, 0.1);
-            transform: translateY(0);
+            box-shadow: 0 12px 32px rgba(0, 47, 135, 0.12), 0 4px 12px rgba(0, 47, 135, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 상단 하이라이트 효과 */
+        .report-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
         }
         
         .hospital-logo {
             width: auto;
-            max-width: 400px;
-            height: 80px;
+            max-width: 380px;
+            height: 75px;
             margin-bottom: 20px;
             object-fit: contain;
         }
         
+        /* 네이비→레드 그라데이션 구분선 */
         .header-divider {
             height: 4px;
-            background: linear-gradient(to right, #0066cc 0%, #cc0000 100%);
+            background: linear-gradient(90deg, #002f87 0%, #e60012 100%);
             margin: 20px 0;
             border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 47, 135, 0.2);
         }
         
         .report-header h1 {
-            font-size: 36px;
+            font-size: 32px;
             margin-bottom: 10px;
             font-weight: 700;
-            color: #003366;
-            letter-spacing: 3px;
+            color: #002f87;
+            letter-spacing: 1px;
         }
         
         .report-date {
             font-size: 16px;
             color: #666;
-            margin-top: 8px;
+            margin-top: 10px;
+            line-height: 1.7;
         }
         
-        /* 환자 정보 */
+        /* 환자 정보 - 연한 블루 그라데이션 */
         .patient-info {
             margin: 0 20px 20px 20px;
-            padding: 25px 30px;
-            background: linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%);
+            padding: 28px 35px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.3), 0 3px 10px rgba(33, 150, 243, 0.2);
-            transform: translateY(0);
+            box-shadow: 0 12px 32px rgba(33, 150, 243, 0.18), 0 4px 12px rgba(33, 150, 243, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 상단 하이라이트 */
+        .patient-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
         }
         
         .patient-info-grid {
@@ -91,86 +118,121 @@
         }
         
         .info-label {
-            color: #1976d2;
+            color: #002f87;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-size: 14px;
+            line-height: 1.7;
         }
         
         .info-value {
-            font-size: 18px;
+            font-size: 16px;
             color: #212529;
             font-weight: 600;
+            line-height: 1.7;
         }
         
         /* 요약 섹션 */
         .summary-section {
             margin: 0 20px 20px 20px;
-            padding: 25px 20px;
+            padding: 30px 25px;
             background: white;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 3px 10px rgba(0, 0, 0, 0.1);
-            transform: translateY(0);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 상단 하이라이트 */
+        .summary-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
         }
         
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 20px;
+            margin-bottom: 25px;
         }
         
+        /* 통계 카드 - 블루-틸, 그린-민트, 코랄-오렌지 */
         .summary-card {
-            background: linear-gradient(135deg, #64b5f6 0%, #42a5f5 100%);
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);  /* 블루-틸 */
             border-radius: 16px;
-            padding: 25px 20px;
+            padding: 30px 20px;
             text-align: center;
-            box-shadow: 0 10px 25px rgba(33, 150, 243, 0.45), 0 3px 10px rgba(33, 150, 243, 0.3);
-            transform: translateY(0);
-            transition: transform 0.2s ease;
+            box-shadow: 0 12px 32px rgba(79, 172, 254, 0.4), 0 4px 12px rgba(79, 172, 254, 0.25);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        /* 상단 하이라이트 효과 */
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%);
+            border-radius: 16px 16px 0 0;
         }
         
         .summary-card.normal {
-            background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
-            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.45), 0 3px 10px rgba(76, 175, 80, 0.3);
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);  /* 그린-민트 */
+            box-shadow: 0 12px 32px rgba(67, 233, 123, 0.4), 0 4px 12px rgba(67, 233, 123, 0.25);
         }
         
         .summary-card.abnormal {
-            background: linear-gradient(135deg, #ffd54f 0%, #ffca28 100%);
-            box-shadow: 0 10px 25px rgba(255, 193, 7, 0.45), 0 3px 10px rgba(255, 193, 7, 0.3);
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);  /* 코랄-오렌지 */
+            box-shadow: 0 12px 32px rgba(250, 112, 154, 0.4), 0 4px 12px rgba(250, 112, 154, 0.25);
         }
         
         .summary-number {
-            font-size: 36px;
+            font-size: 52px;
             font-weight: 900;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            line-height: 1;
         }
         
         .summary-label {
             font-size: 16px;
             font-weight: 700;
             color: white;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            line-height: 1.7;
         }
         
-        /* 이상 소견 알림 */
+        /* 주의 항목 카드 - 화이트 배경, 좌측 레드 보더 */
         .abnormal-alert {
-            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
-            border-left: 6px solid #ff6f00;
-            padding: 20px;
+            background: white;
+            border-left: 5px solid #e60012;
+            padding: 25px 30px;
             border-radius: 12px;
-            margin-top: 20px;
-            box-shadow: 0 8px 20px rgba(255, 111, 0, 0.35), 0 3px 8px rgba(255, 111, 0, 0.2);
-            transform: translateY(0);
+            margin-top: 25px;
+            box-shadow: 0 8px 20px rgba(230, 0, 18, 0.12), 0 3px 8px rgba(230, 0, 18, 0.08);
+            position: relative;
         }
         
         .abnormal-alert h3 {
-            color: #e65100;
+            color: #e60012;
             font-size: 18px;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
+            line-height: 1.7;
         }
         
         .abnormal-alert ul {
@@ -179,30 +241,44 @@
         }
         
         .abnormal-alert li {
-            padding: 8px 0;
-            padding-left: 25px;
-            color: #f57c00;
+            padding: 10px 0;
+            padding-left: 28px;
+            color: #333;
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 500;
             position: relative;
+            line-height: 1.7;
         }
         
+        /* 레드 불릿 포인트 */
         .abnormal-alert li:before {
             content: "●";
             position: absolute;
             left: 0;
-            color: #ff6f00;
-            font-size: 18px;
+            color: #e60012;
+            font-size: 16px;
         }
         
-        /* 검사 그룹 - 카드형 디자인 */
+        /* 검사 그룹 - 3D 카드 */
         .test-group {
             margin: 0 20px 20px 20px;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 3px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06);
             background: white;
-            transform: translateY(0);
+            position: relative;
+        }
+        
+        /* 상단 하이라이트 */
+        .test-group::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+            z-index: 1;
         }
         
         /* 카테고리별 배경색 제거 */
@@ -295,12 +371,14 @@
             font-weight: 600;
             font-size: 15px;
             color: #212529;
+            line-height: 1.7;
         }
         
         .test-result {
             text-align: center;
             font-size: 16px;
             font-weight: 700;
+            line-height: 1.7;
         }
         
         .test-result.abnormal {
@@ -318,8 +396,9 @@
         
         .test-reference {
             text-align: right;
-            font-size: 13px;
+            font-size: 14px;
             color: #6c757d;
+            line-height: 1.7;
         }
         
         .test-unit {
@@ -331,45 +410,46 @@
         /* 의료진 코멘트 */
         .doctor-comment {
             margin: 0 20px 20px 20px;
-            padding: 20px;
+            padding: 25px 30px;
             background: white;
-            border-left: 6px solid #2196F3;
+            border-left: 5px solid #002f87;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.3), 0 3px 10px rgba(33, 150, 243, 0.2);
-            transform: translateY(0);
+            box-shadow: 0 12px 32px rgba(0, 47, 135, 0.12), 0 4px 12px rgba(0, 47, 135, 0.08);
+            position: relative;
         }
         
         .doctor-comment h3 {
-            color: #1976D2;
-            font-size: 16px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            color: #002f87;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.7;
         }
         
         .doctor-comment p {
             color: #555;
-            font-size: 14px;
-            line-height: 1.8;
+            font-size: 15px;
+            line-height: 1.7;
             white-space: pre-wrap;
         }
         
         /* 권장사항 */
         .recommendations {
             margin: 0 20px 20px 20px;
-            padding: 20px;
+            padding: 25px 30px;
             background: white;
-            border-left: 6px solid #8bc34a;
+            border-left: 5px solid #43e97b;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(139, 195, 74, 0.3), 0 3px 10px rgba(139, 195, 74, 0.2);
-            transform: translateY(0);
+            box-shadow: 0 12px 32px rgba(67, 233, 123, 0.12), 0 4px 12px rgba(67, 233, 123, 0.08);
+            position: relative;
         }
         
         .recommendations h3 {
-            color: #558b2f;
-            font-size: 16px;
-            margin-bottom: 10px;
+            color: #2d8659;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.7;
         }
         
         .recommendations ul {
@@ -378,48 +458,55 @@
         }
         
         .recommendations li {
-            padding: 8px 0;
-            padding-left: 25px;
+            padding: 10px 0;
+            padding-left: 28px;
             position: relative;
             color: #555;
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 15px;
+            line-height: 1.7;
         }
         
         .recommendations li:before {
             content: "✓";
             position: absolute;
             left: 0;
-            color: #8bc34a;
-            font-weight: bold;
+            color: #43e97b;
+            font-weight: 900;
+            font-size: 16px;
         }
         
         /* 푸터 */
         .report-footer {
             margin: 0 20px 20px 20px;
-            padding: 20px;
+            padding: 25px;
             text-align: center;
             background: white;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
-            transform: translateY(0);
-            font-size: 12px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+            font-size: 13px;
             color: #6c757d;
+            line-height: 1.7;
         }
         
-        /* 모바일 최적화 */
-        @media (max-width: 600px) {
+        /* 모바일 반응형 - 통계 카드 세로 배치 */
+        @media (max-width: 768px) {
             .report-header h1 {
-                font-size: 24px;
+                font-size: 28px;
             }
             
             .patient-info-grid {
                 grid-template-columns: 1fr;
-                gap: 10px;
+                gap: 15px;
             }
             
+            /* 모바일에서 통계 카드 세로로 쌓이도록 */
             .summary-cards {
                 grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .summary-number {
+                font-size: 48px;
             }
             
             .test-row {
