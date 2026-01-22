@@ -2,7 +2,7 @@
 검사 결과 분석 및 그룹화 모듈
 """
 
-from test_definitions import (
+from .test_definitions import (
     TEST_GROUPS, 
     find_test_group, 
     get_reference_range,

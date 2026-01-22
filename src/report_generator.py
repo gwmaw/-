@@ -108,16 +108,33 @@ class ReportGenerator:
             
             raise Exception(f"PDF 생성 실패: {str(e)}")
     
-    def generate_png(self, html_content, output_path, width=800):
-        """PNG 이미지 생성"""
+    def generate_png(self, html_content, output_path, width=800, dpi=200):
+        """PNG 이미지 생성 - PyMuPDF 사용"""
         try:
+            import fitz  # PyMuPDF
+            from PIL import Image
+            
             # 임시 PDF 생성
             temp_pdf = output_path.replace('.png', '_temp.pdf')
             self.generate_pdf(html_content, temp_pdf)
             
-            # PDF를 PNG로 변환
-            from pdf2image import convert_from_path
-            images = convert_from_path(temp_pdf, dpi=200)
+            # PDF를 PyMuPDF로 열기
+            doc = fitz.open(temp_pdf)
+            
+            # 모든 페이지를 PNG로 변환
+            images = []
+            zoom = dpi / 72.0  # 72 DPI가 기본
+            mat = fitz.Matrix(zoom, zoom)
+            
+            for page_num in range(len(doc)):
+                page = doc.load_page(page_num)
+                pix = page.get_pixmap(matrix=mat, alpha=False)
+                
+                # PIL Image로 변환
+                img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+                images.append(img)
+            
+            doc.close()
             
             # 모든 페이지를 하나의 이미지로 결합
             if len(images) == 1:
@@ -147,11 +164,18 @@ class ReportGenerator:
             if os.path.exists(temp_pdf):
                 os.remove(temp_pdf)
             
+            file_size = os.path.getsize(output_path)
+            print(f"✅ PNG 생성 성공: {output_path} ({file_size:,} bytes)")
+            
             return output_path
-        except ImportError:
-            # pdf2image가 없으면 WeasyPrint로 직접 PNG 생성
+            
+        except ImportError as e:
+            print(f"⚠️  PyMuPDF가 설치되지 않았습니다: {e}")
             return self._generate_png_fallback(html_content, output_path)
         except Exception as e:
+            import traceback
+            print(f"❌ PNG 생성 오류:")
+            traceback.print_exc()
             raise Exception(f"PNG 생성 오류: {str(e)}")
     
     def _generate_png_fallback(self, html_content, output_path):
