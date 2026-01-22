@@ -6,6 +6,7 @@ HTML 템플릿 렌더링 및 PDF/PNG 출력
 from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
 import os
+import base64
 
 
 class ReportGenerator:
@@ -27,6 +28,17 @@ class ReportGenerator:
             logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 
                                     'assets', 'hospital_logo.png')
         
+        # 로고를 base64로 인코딩
+        logo_base64 = ''
+        if os.path.exists(logo_path):
+            try:
+                with open(logo_path, 'rb') as f:
+                    logo_data = f.read()
+                    logo_base64 = base64.b64encode(logo_data).decode('utf-8')
+                    logo_base64 = f"data:image/png;base64,{logo_base64}"
+            except Exception as e:
+                print(f"⚠️  로고 로드 실패: {e}")
+        
         # 템플릿 데이터 준비
         template_data = {
             'report_date': now.strftime('%Y년 %m월 %d일'),
@@ -40,7 +52,7 @@ class ReportGenerator:
             'summary': data['summary'],
             'recommendations': data.get('recommendations', []),
             'doctor_comment': doctor_comment,
-            'logo_path': logo_path
+            'logo_path': logo_base64
         }
         
         html_content = template.render(**template_data)
