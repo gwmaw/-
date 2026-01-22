@@ -4,8 +4,6 @@ HTML 템플릿 렌더링 및 PDF/PNG 출력
 """
 
 from jinja2 import Environment, FileSystemLoader
-from weasyprint import HTML, CSS
-from PIL import Image
 from datetime import datetime
 import os
 
@@ -51,26 +49,31 @@ class ReportGenerator:
     def generate_pdf(self, html_content, output_path):
         """PDF 생성"""
         try:
-            # CSS 스타일 최적화
-            css = CSS(string='''
-                @page {
-                    size: A4;
-                    margin: 0;
-                }
-                body {
-                    margin: 0;
-                    padding: 0;
-                }
-            ''')
+            from xhtml2pdf import pisa
             
-            # HTML을 PDF로 변환
-            HTML(string=html_content).write_pdf(
-                output_path,
-                stylesheets=[css]
-            )
+            # PDF 파일 생성
+            with open(output_path, "wb") as pdf_file:
+                # HTML을 PDF로 변환
+                pisa_status = pisa.CreatePDF(
+                    html_content.encode('utf-8'),
+                    dest=pdf_file,
+                    encoding='utf-8'
+                )
+                
+                if pisa_status.err:
+                    raise Exception("PDF 변환 중 오류 발생")
             
             return output_path
+        except ImportError:
+            # xhtml2pdf가 없으면 HTML 저장
+            html_path = output_path.replace('.pdf', '.html')
+            with open(html_path, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+            return html_path
         except Exception as e:
+            # 오류 발생 시 상세 정보 출력
+            import traceback
+            traceback.print_exc()
             raise Exception(f"PDF 생성 오류: {str(e)}")
     
     def generate_png(self, html_content, output_path, width=800):
