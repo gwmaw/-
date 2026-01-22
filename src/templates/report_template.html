@@ -154,12 +154,7 @@
         }
         
         .group-icon {
-            font-size: 14px;
-            font-weight: bold;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 4px 8px;
-            border-radius: 4px;
-            color: #333;
+            display: none; /* 아이콘 숨김 */
         }
         
         .group-title {
@@ -379,7 +374,7 @@
     <div class="report-container">
         <!-- 헤더 -->
         <div class="report-header">
-            <h1>🏥 검사 결과 리포트</h1>
+            <h1>검사 결과 리포트</h1>
             <div class="report-date">검사일: {{ report_date }}</div>
         </div>
         
@@ -424,10 +419,10 @@
             
             {% if summary.abnormal > 0 %}
             <div class="abnormal-alert">
-                <h3>⚠️ 주의가 필요한 항목</h3>
+                <h3>주의가 필요한 항목</h3>
                 <ul>
                     {% for group in summary.abnormal_groups %}
-                    <li>{{ group.icon }} {{ group.name }}: {{ group.count }}개 항목</li>
+                    <li>{{ group.name }}: {{ group.count }}개 항목</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -438,7 +433,6 @@
         {% for group_key, group_data in grouped_tests.items() %}
         <div class="test-group {% if group_key == 'urine' %}urine-group{% endif %}">
             <div class="group-header" style="border-left-color: {{ group_data.info.color }};">
-                <span class="group-icon">{{ group_data.info.icon }}</span>
                 <span class="group-title">{{ group_data.info.name }}</span>
                 {% if group_data.abnormal_count > 0 %}
                 <span class="group-badge">주의 {{ group_data.abnormal_count }}</span>
@@ -473,7 +467,6 @@
         {% if doctor_comment %}
         <div class="doctor-comment">
             <h3>
-                <span>👨‍⚕️</span>
                 <span>의료진 코멘트</span>
             </h3>
             <p>{{ doctor_comment }}</p>
@@ -482,7 +475,7 @@
         
         <!-- 권장사항 -->
         <div class="recommendations">
-            <h3>💡 권장사항</h3>
+            <h3>권장사항</h3>
             <ul>
                 {% for recommendation in recommendations %}
                 <li>{{ recommendation }}</li>
