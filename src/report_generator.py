@@ -23,10 +23,10 @@ class ReportGenerator:
         # 현재 날짜/시간
         now = datetime.now()
         
-        # 로고 경로가 없으면 기본 경로 사용
+        # 로고 경로가 없으면 기본 경로 사용 (simple 버전)
         if not logo_path:
             logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 
-                                    'assets', 'hospital_logo.png')
+                                    'assets', 'hospital_logo_simple.png')
         
         # 로고를 base64로 인코딩
         logo_base64 = ''
@@ -186,9 +186,9 @@ def generate_report(analysis_data, patient_info, doctor_comment='',
     # 템플릿 디렉토리
     template_dir = os.path.join(os.path.dirname(__file__), 'templates')
     
-    # 로고 경로
+    # 로고 경로 (simple 버전)
     logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 
-                            'assets', 'hospital_logo.png')
+                            'assets', 'hospital_logo_simple.png')
     
     # 리포트 생성기 초기화
     generator = ReportGenerator(template_dir)
