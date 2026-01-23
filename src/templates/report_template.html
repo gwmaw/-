@@ -508,6 +508,26 @@
             {% endif %}
         </div>
         
+        <!-- 의료진 코멘트 -->
+        {% if doctor_comment %}
+        <div class="doctor-comment">
+            <h3>
+                <span>의료진 코멘트</span>
+            </h3>
+            <p>{{ doctor_comment }}</p>
+        </div>
+        {% endif %}
+        
+        <!-- 권장사항 -->
+        <div class="recommendations">
+            <h3>권장사항</h3>
+            <ul>
+                {% for recommendation in recommendations %}
+                <li>{{ recommendation }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
         <!-- 검사 결과 그룹 -->
         {% for group_key, group_data in grouped_tests.items() %}
         <div class="test-group {% if group_key == 'urine' %}urine-group{% endif %}" data-category="{{ group_key }}">
@@ -545,26 +565,6 @@
             </div>
         </div>
         {% endfor %}
-        
-        <!-- 의료진 코멘트 -->
-        {% if doctor_comment %}
-        <div class="doctor-comment">
-            <h3>
-                <span>의료진 코멘트</span>
-            </h3>
-            <p>{{ doctor_comment }}</p>
-        </div>
-        {% endif %}
-        
-        <!-- 권장사항 -->
-        <div class="recommendations">
-            <h3>권장사항</h3>
-            <ul>
-                {% for recommendation in recommendations %}
-                <li>{{ recommendation }}</li>
-                {% endfor %}
-            </ul>
-        </div>
         
         <!-- 푸터 -->
         <div class="report-footer">
