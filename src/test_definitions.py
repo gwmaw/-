@@ -118,6 +118,19 @@ TEST_GROUPS = {
             "요 알부민/크레아티닌비(ACR)", "알부민/크레아티닌비",
             "요단백"
         ]
+    },
+    "other": {
+        "name": "기타 검사",
+        "icon": "[기]",
+        "color": "#9B59B6",
+        "tests": [
+            # 염증/면역 검사
+            "CRP", "C-Reactive Protein", "C-반응성 단백", "염증수치", "염증수치(CRP)",
+            # 통풍/요산 검사
+            "Uric Acid", "UA", "요산", "통풍수치", "통풍수치-요산",
+            # 기타
+            "ESR", "적혈구침강속도"
+        ]
     }
 }
 
@@ -163,8 +176,15 @@ REFERENCE_RANGES = {
     "GFR": {"min": 90, "max": 999, "unit": "mL/min/1.73m²"},
     "Uric Acid": {"min": 3.5, "max": 7.0, "unit": "mg/dL"},
     "UA": {"min": 3.5, "max": 7.0, "unit": "mg/dL"},
+    "요산": {"min": 3.5, "max": 7.0, "unit": "mg/dL"},
+    "통풍수치": {"min": 3.4, "max": 7.0, "unit": "mg/dL"},
+    "통풍수치-요산": {"min": 3.4, "max": 7.0, "unit": "mg/dL"},
     "통풍수치-요산(uric acid)": {"min": 3.4, "max": 7.0, "unit": "mg/dL"},
+    "CRP": {"min": 0.0, "max": 0.5, "unit": "mg/dL"},
+    "C-Reactive Protein": {"min": 0.0, "max": 0.5, "unit": "mg/dL"},
+    "염증수치": {"min": 0.0, "max": 0.5, "unit": "mg/dL"},
     "염증수치(CRP)": {"min": 0.0, "max": 0.5, "unit": "mg/dL"},
+    "C-반응성 단백": {"min": 0.0, "max": 0.5, "unit": "mg/dL"},
     
     # 당뇨
     "Glucose": {"min": 70, "max": 99, "unit": "mg/dL"},
@@ -328,10 +348,28 @@ REFERENCE_RANGES = {
 
 def find_test_group(test_name):
     """검사 항목명으로 그룹 찾기"""
+    import re
+    
+    # 1단계: 정확한 매칭 시도 (대소문자 무시)
+    for group_key, group_info in TEST_GROUPS.items():
+        for test in group_info["tests"]:
+            if test.lower() == test_name.lower():
+                return group_key
+    
+    # 2단계: 단어 경계를 고려한 매칭
+    for group_key, group_info in TEST_GROUPS.items():
+        for test in group_info["tests"]:
+            # test가 test_name에 완전한 단어로 포함되는지 확인
+            pattern = r'\b' + re.escape(test.lower()) + r'\b'
+            if re.search(pattern, test_name.lower()):
+                return group_key
+    
+    # 3단계: 부분 문자열 매칭 (fallback)
     for group_key, group_info in TEST_GROUPS.items():
         for test in group_info["tests"]:
             if test.lower() in test_name.lower() or test_name.lower() in test.lower():
                 return group_key
+    
     return None
 
 

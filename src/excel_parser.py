@@ -147,9 +147,7 @@ class ExcelParser:
             # HbA1c-IFCC, HbA1c-eAG, 헤모글로빈A1C 항목은 제외
             skip_tests = [
                 'HbA1c-IFCC', 'HbA1c-eAG', 
-                '헤모글로빈A1C', 'Hemoglobin A1C',
-                '염증수치', 'CRP',
-                '통풍수치', '요산', 'Uric Acid', 'uric acid'
+                '헤모글로빈A1C', 'Hemoglobin A1C'
             ]
             
             should_skip = False
