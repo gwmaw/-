@@ -23,8 +23,9 @@ except ImportError:
 class ReportAnalyzer:
     """검사 결과를 분석하고 그룹화하는 클래스"""
     
-    def __init__(self, tests):
+    def __init__(self, tests, has_diabetes=False):
         self.tests = tests
+        self.has_diabetes = has_diabetes
         self.grouped_tests = {}
         self.summary = {
             'total': 0,
@@ -99,11 +100,45 @@ class ReportAnalyzer:
         # 참조 범위 가져오기
         ref_range = get_reference_range(test_name)
         
-        # 이상 여부 판별
-        abnormal = is_abnormal(test_name, result)
+        # 당뇨 환자의 경우 HbA1c와 LDL 참고치 조정
+        if self.has_diabetes and ref_range:
+            # HbA1c: 7.0% 이하를 정상으로
+            if 'HbA1c' in test_name or '당화혈색소' in test_name:
+                ref_range = {
+                    'min': ref_range.get('min', 0),
+                    'max': 7.0,
+                    'unit': ref_range.get('unit', '%')
+                }
+            # LDL: 100 mg/dL 이하를 정상으로
+            elif 'LDL' in test_name or '저밀도콜레스테롤' in test_name:
+                ref_range = {
+                    'min': ref_range.get('min', 0),
+                    'max': 100,
+                    'unit': ref_range.get('unit', 'mg/dL')
+                }
         
-        # 이상 방향 (높음/낮음)
-        direction = get_abnormal_direction(test_name, result) if abnormal else None
+        # 이상 여부 판별 (조정된 참고치 사용)
+        if self.has_diabetes and ref_range:
+            # 당뇨 환자용 참고치로 직접 판별
+            try:
+                result_value = float(str(result).replace(',', '').replace('>', '').replace('<', '').replace('≤', '').replace('≥', ''))
+                abnormal = False
+                direction = None
+                
+                if 'max' in ref_range and result_value > ref_range['max']:
+                    abnormal = True
+                    direction = 'high'
+                elif 'min' in ref_range and result_value < ref_range['min']:
+                    abnormal = True
+                    direction = 'low'
+            except (ValueError, TypeError):
+                # 숫자가 아닌 경우 기본 로직 사용
+                abnormal = is_abnormal(test_name, result)
+                direction = get_abnormal_direction(test_name, result) if abnormal else None
+        else:
+            # 일반 환자는 기본 로직 사용
+            abnormal = is_abnormal(test_name, result)
+            direction = get_abnormal_direction(test_name, result) if abnormal else None
         
         # 단위 설정
         unit = test.get('unit', '')
@@ -207,9 +242,14 @@ class ReportAnalyzer:
         return recommendations
 
 
-def analyze_test_results(tests):
-    """검사 결과 분석 헬퍼 함수"""
-    analyzer = ReportAnalyzer(tests)
+def analyze_test_results(tests, has_diabetes=False):
+    """검사 결과 분석 헬퍼 함수
+    
+    Args:
+        tests: 검사 결과 리스트
+        has_diabetes: 당뇨병 환자 여부 (True일 경우 HbA1c, LDL 기준 조정)
+    """
+    analyzer = ReportAnalyzer(tests, has_diabetes=has_diabetes)
     analysis = analyzer.analyze()
     
     return {

@@ -71,8 +71,11 @@ def upload_file():
         # 엑셀 파일 파싱
         parsed_data = parse_excel_file(filepath)
         
-        # 검사 결과 분석
-        analysis = analyze_test_results(parsed_data['tests'])
+        # 당뇨 유무 확인
+        has_diabetes = request.form.get('has_diabetes') == '1'
+        
+        # 검사 결과 분석 (당뇨 유무 전달)
+        analysis = analyze_test_results(parsed_data['tests'], has_diabetes=has_diabetes)
         
         # 환자 정보 가져오기
         patient_info = parsed_data['patient_info']
@@ -139,8 +142,11 @@ def preview_report():
         # 엑셀 파일 파싱
         parsed_data = parse_excel_file(filepath)
         
-        # 검사 결과 분석
-        analysis = analyze_test_results(parsed_data['tests'])
+        # 당뇨 유무는 미리보기에서 확인 불가 (기본값: False)
+        has_diabetes = False
+        
+        # 검사 결과 분석 (당뇨 유무 전달)
+        analysis = analyze_test_results(parsed_data['tests'], has_diabetes=has_diabetes)
         
         # 분석 결과 반환
         return jsonify({
