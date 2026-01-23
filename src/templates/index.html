@@ -414,6 +414,15 @@
                         <div class="form-group">
                             <textarea id="doctor_comment" name="doctor_comment" placeholder="검사 결과에 대한 코멘트를 입력하세요..."></textarea>
                         </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; cursor: pointer;">
+                                <input type="checkbox" id="include_recommendations" name="include_recommendations" value="1" checked style="width: auto; margin-right: 8px;">
+                                <span>자동 권장사항 포함</span>
+                            </label>
+                            <p style="font-size: 11px; color: #666; margin-top: 5px; margin-left: 24px;">
+                                ✓ 체크 해제 시 리포트에서 자동 생성된 권장사항을 제외합니다.
+                            </p>
+                        </div>
                     </div>
                 </div>
                 
@@ -493,7 +502,7 @@
                     </div>
                     
                     <!-- 권장사항 -->
-                    <div class="preview-card">
+                    <div class="preview-card" id="recommendations-preview">
                         <h3>💡 권장사항</h3>
                         <ul class="preview-list" id="recommendations-list">
                         </ul>
@@ -513,6 +522,17 @@
         const previewLoading = document.getElementById('preview-loading');
         const previewEmpty = document.getElementById('preview-empty');
         const previewData = document.getElementById('preview-data');
+        const includeRecommendationsCheckbox = document.getElementById('include_recommendations');
+        const recommendationsPreview = document.getElementById('recommendations-preview');
+        
+        // 권장사항 체크박스 이벤트
+        includeRecommendationsCheckbox.addEventListener('change', () => {
+            if (includeRecommendationsCheckbox.checked) {
+                recommendationsPreview.style.display = 'block';
+            } else {
+                recommendationsPreview.style.display = 'none';
+            }
+        });
         
         // 파일 업로드 영역 클릭
         fileUploadArea.addEventListener('click', () => {

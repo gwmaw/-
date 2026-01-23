@@ -93,6 +93,9 @@ def upload_file():
         # 의료진 코멘트
         doctor_comment = request.form.get('doctor_comment', '')
         
+        # 권장사항 포함 여부
+        include_recommendations = request.form.get('include_recommendations') == '1'
+        
         # 출력 형식
         output_format = request.form.get('output_format', 'pdf')
         
@@ -102,7 +105,8 @@ def upload_file():
             patient_info=patient_info,
             doctor_comment=doctor_comment,
             output_format=output_format,
-            output_dir=app.config['OUTPUT_FOLDER']
+            output_dir=app.config['OUTPUT_FOLDER'],
+            include_recommendations=include_recommendations
         )
         
         # 생성된 파일 반환

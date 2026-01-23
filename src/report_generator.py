@@ -192,7 +192,8 @@ class ReportGenerator:
 
 
 def generate_report(analysis_data, patient_info, doctor_comment='', 
-                   output_format='pdf', output_dir='output', filename=None):
+                   output_format='pdf', output_dir='output', filename=None,
+                   include_recommendations=True):
     """
     리포트 생성 헬퍼 함수
     
@@ -203,6 +204,7 @@ def generate_report(analysis_data, patient_info, doctor_comment='',
         output_format: 출력 형식 ('pdf', 'png', 'html')
         output_dir: 출력 디렉토리
         filename: 파일명 (없으면 자동 생성)
+        include_recommendations: 권장사항 포함 여부 (기본값: True)
     
     Returns:
         생성된 파일 경로
@@ -222,7 +224,7 @@ def generate_report(analysis_data, patient_info, doctor_comment='',
         'patient_info': patient_info,
         'grouped_tests': analysis_data['grouped_tests'],
         'summary': analysis_data['summary'],
-        'recommendations': analysis_data.get('recommendations', [])
+        'recommendations': analysis_data.get('recommendations', []) if include_recommendations else []
     }
     
     # HTML 생성

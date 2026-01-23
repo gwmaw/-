@@ -522,6 +522,7 @@
         {% endif %}
         
         <!-- 권장사항 -->
+        {% if recommendations and recommendations|length > 0 %}
         <div class="recommendations">
             <h3>권장사항</h3>
             <ul>
@@ -530,6 +531,7 @@
                 {% endfor %}
             </ul>
         </div>
+        {% endif %}
         
         <!-- 검사 결과 그룹 -->
         {% for group_key, group_data in grouped_tests.items() %}
