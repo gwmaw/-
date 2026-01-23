@@ -9,10 +9,11 @@ TEST_GROUPS = {
         "icon": "[간]",
         "color": "#FF6B6B",
         "tests": [
-            "AST", "SGOT", "AST(SGOT)", "AST (SGOT)", "간기능(AST)",
+            "AST", "SGOT", "AST(SGOT)", "AST (SGPT)", "간기능(AST)",
             "ALT", "SGPT", "ALT(SGPT)", "ALT (SGPT)", "간기능(ALT)",
             "GGT", "γ-GTP", "Gamma-GT", "간기능(γ-GTP)", "γ-GT",
-            "Total Bilirubin", "T-Bil", "Bilirubin", "황달수치", "총빌리루빈",
+            "Total Bilirubin", "T-Bil", "Bilirubin", "황달수치", "총빌리루빈", "황달수치(T-bil)",
+            "Direct Bilirubin", "D-Bil", "직접빌리루빈",
             "ALP", "Alkaline Phosphatase", "간기능(ALP)", "알칼리포스파타제",
             "총단백", "알부민"
         ]
@@ -142,6 +143,9 @@ REFERENCE_RANGES = {
     "총빌리루빈": {"min": 0.3, "max": 1.2, "unit": "mg/dL"},
     "황달수치(T-bil)": {"min": 0.3, "max": 1.2, "unit": "mg/dl"},
     "Bilirubin": {"min": 0.3, "max": 1.2, "unit": "mg/dL"},
+    "Direct Bilirubin": {"min": 0.0, "max": 0.30, "unit": "mg/dL"},
+    "D-Bil": {"min": 0.0, "max": 0.30, "unit": "mg/dL"},
+    "직접빌리루빈": {"min": 0.0, "max": 0.30, "unit": "mg/dL"},
     "ALP": {"min": 35, "max": 240, "unit": "U/L"},
     "간기능(ALP)": {"min": 0, "max": 240, "unit": "U/L"},
     "알칼리포스파타제(ALP)": {"min": 35, "max": 104, "unit": "IU/L"},
