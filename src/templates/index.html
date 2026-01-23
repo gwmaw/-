@@ -477,6 +477,12 @@
                         </div>
                     </div>
                     
+                    <!-- 의료진 코멘트 -->
+                    <div class="preview-card" id="doctor-comment-preview" style="display: none;">
+                        <h3>👨‍⚕️ 의료진 코멘트</h3>
+                        <div id="doctor-comment-text" style="white-space: pre-wrap; line-height: 1.6; color: #555; font-size: 14px;"></div>
+                    </div>
+                    
                     <!-- 권장사항 -->
                     <div class="preview-card">
                         <h3>💡 권장사항</h3>
@@ -582,6 +588,29 @@
                 abnormalAlert.style.display = 'block';
             } else {
                 document.getElementById('abnormal-alert').style.display = 'none';
+            }
+            
+            // 의료진 코멘트 (실시간 업데이트)
+            const doctorCommentTextarea = document.getElementById('doctor_comment');
+            const doctorCommentPreview = document.getElementById('doctor-comment-preview');
+            const doctorCommentText = document.getElementById('doctor-comment-text');
+            
+            // textarea 변경 이벤트 리스너
+            doctorCommentTextarea.addEventListener('input', () => {
+                const commentValue = doctorCommentTextarea.value.trim();
+                if (commentValue) {
+                    doctorCommentText.textContent = commentValue;
+                    doctorCommentPreview.style.display = 'block';
+                } else {
+                    doctorCommentPreview.style.display = 'none';
+                }
+            });
+            
+            // 초기값 설정
+            const initialComment = doctorCommentTextarea.value.trim();
+            if (initialComment) {
+                doctorCommentText.textContent = initialComment;
+                doctorCommentPreview.style.display = 'block';
             }
             
             // 권장사항
