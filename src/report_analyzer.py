@@ -34,6 +34,55 @@ class ReportAnalyzer:
             'abnormal_groups': []
         }
     
+    def _parse_excel_reference(self, reference_str, unit=''):
+        """엑셀의 참고치 문자열을 파싱하여 dict로 변환"""
+        import re
+        
+        if not reference_str:
+            return None
+        
+        # 패턴: "0.4 ~ 1.3", "6 ~ 20", "0 - 199", "≤ 0.30", "> 60" 등
+        # 범위 형식 (min ~ max 또는 min - max)
+        range_pattern = r'([\d.]+)\s*[~\-−]\s*([\d.]+)'
+        match = re.search(range_pattern, reference_str)
+        
+        if match:
+            min_val = float(match.group(1))
+            max_val = float(match.group(2))
+            return {
+                'min': min_val,
+                'max': max_val,
+                'unit': unit
+            }
+        
+        # 단일 상한값 (≤, <)
+        upper_pattern = r'[≤<]\s*([\d.]+)'
+        match = re.search(upper_pattern, reference_str)
+        if match:
+            max_val = float(match.group(1))
+            return {
+                'min': 0.0,
+                'max': max_val,
+                'unit': unit
+            }
+        
+        # 단일 하한값 (≥, >)
+        lower_pattern = r'[≥>]\s*([\d.]+)'
+        match = re.search(lower_pattern, reference_str)
+        if match:
+            min_val = float(match.group(1))
+            return {
+                'min': min_val,
+                'max': 999999,  # 큰 값으로 설정
+                'unit': unit
+            }
+        
+        # 문자열 값 (Negative, Positive 등)
+        return {
+            'value': reference_str,
+            'unit': unit
+        }
+    
     def analyze(self):
         """검사 결과 분석 및 그룹화"""
         # 그룹 초기화
@@ -97,8 +146,17 @@ class ReportAnalyzer:
         test_name = test['name']
         result = test['result']
         
-        # 참조 범위 가져오기
-        ref_range = get_reference_range(test_name)
+        # 참조 범위 가져오기 (우선순위: 엑셀 > test_definitions.py)
+        excel_reference = test.get('reference', '').strip()
+        ref_range = None
+        
+        # 1순위: 엑셀의 참고치 파싱
+        if excel_reference:
+            ref_range = self._parse_excel_reference(excel_reference, test.get('unit', ''))
+        
+        # 2순위: test_definitions.py의 참고치 (fallback)
+        if not ref_range:
+            ref_range = get_reference_range(test_name)
         
         # 당뇨 환자의 경우 HbA1c와 LDL 참고치 조정
         if self.has_diabetes and ref_range:
@@ -146,17 +204,20 @@ class ReportAnalyzer:
             unit = ref_range.get('unit', '')
         
         # 참조 범위 문자열 생성
-        # 우선순위: 우리가 정의한 간소화된 참조 범위 > 엑셀 파일의 참조 범위
+        # 우선순위: 엑셀 파일의 참조 범위 > 우리가 정의한 참조 범위
         reference_str = ''
-        if ref_range:
+        
+        # 1순위: 엑셀의 참고치 사용
+        excel_reference = test.get('reference', '').strip()
+        if excel_reference:
+            reference_str = excel_reference
+        
+        # 2순위: test_definitions.py의 참고치 사용 (fallback)
+        if not reference_str and ref_range:
             if 'min' in ref_range and 'max' in ref_range:
                 reference_str = f"{ref_range['min']} - {ref_range['max']}"
             elif 'value' in ref_range:
                 reference_str = ref_range['value']
-        
-        # 참조 범위가 없으면 엑셀 파일의 값 사용
-        if not reference_str:
-            reference_str = test.get('reference', '')
         
         return {
             'name': test_name,
