@@ -175,13 +175,14 @@ class ReportAnalyzer:
                     'unit': ref_range.get('unit', 'mg/dL')
                 }
         
-        # 이상 여부 판별 (조정된 참고치 사용)
-        if self.has_diabetes and ref_range:
-            # 당뇨 환자용 참고치로 직접 판별
+        # 이상 여부 판별 (파싱된 참고치 우선 사용)
+        abnormal = False
+        direction = None
+        
+        if ref_range and ('min' in ref_range or 'max' in ref_range):
+            # 참고치가 있으면 직접 판별
             try:
                 result_value = float(str(result).replace(',', '').replace('>', '').replace('<', '').replace('≤', '').replace('≥', ''))
-                abnormal = False
-                direction = None
                 
                 if 'max' in ref_range and result_value > ref_range['max']:
                     abnormal = True
@@ -194,7 +195,7 @@ class ReportAnalyzer:
                 abnormal = is_abnormal(test_name, result)
                 direction = get_abnormal_direction(test_name, result) if abnormal else None
         else:
-            # 일반 환자는 기본 로직 사용
+            # 참고치가 없으면 기본 로직 사용
             abnormal = is_abnormal(test_name, result)
             direction = get_abnormal_direction(test_name, result) if abnormal else None
         
