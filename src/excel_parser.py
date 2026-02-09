@@ -86,7 +86,7 @@ class ExcelParser:
                 continue
             
             # 소변검사 섹션 감지
-            if '요 일반검사' in test_name or '요일반검사' in test_name:
+            if '요 일반검사' in test_name or '요일반검사' in test_name or '소변검사' in test_name:
                 in_urine_section = True
             elif '요침사검사' in test_name:
                 in_urine_sediment_section = True
@@ -134,7 +134,7 @@ class ExcelParser:
                 result_value = ''
             
             # 2. 요일반검사: 결과값이 길면 제거 (세부 항목들이 아래에 있음)
-            if '요 일반검사' in test_name or '요일반검사' in test_name:
+            if '요 일반검사' in test_name or '요일반검사' in test_name or '소변검사' in test_name:
                 result_clean = ''
                 result_value = ''
             
