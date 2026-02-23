@@ -120,6 +120,26 @@ class ReportAnalyzer:
             if group_key is None:
                 group_key = 'other'
             
+            # 혈액학 검사 필터링: 빈혈수치(Hb), 백혈구수(WBC), 혈소판수(PLT)만 표시
+            if group_key == 'blood':
+                test_name = test['name']
+                # 주요 3개 항목만 포함
+                blood_main_keywords = ['빈혈수치', 'Hb', '백혈구수', 'WBC', '혈소판수', 'PLT']
+                
+                # 정확한 매칭 확인
+                is_main_test = False
+                for keyword in blood_main_keywords:
+                    if keyword.lower() in test_name.lower():
+                        # Hb는 HbA1c와 구분
+                        if keyword.lower() == 'hb' and 'a1c' in test_name.lower():
+                            continue
+                        is_main_test = True
+                        break
+                
+                # 주요 항목이 아니면 건너뜀
+                if not is_main_test:
+                    continue
+            
             # 그룹에 추가
             self.grouped_tests[group_key]['tests'].append(analyzed_test)
             
