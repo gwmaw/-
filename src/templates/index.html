@@ -441,7 +441,7 @@
                     </div>
                 </div>
                 
-                <!-- 이전 검사 파일 (선택) -->
+                <!-- 이전 검사 파일 업로드 기능은 v2.3에서 제거됨 (다중 날짜 자동 감지로 대체)
                 <div class="form-card">
                     <div class="form-section">
                         <h2>📊 이전 검사 파일 (선택)</h2>
@@ -458,7 +458,9 @@
                             <span id="prev-file-name"></span>
                         </div>
                     </div>
-                </div>                
+                </div>
+                -->
+                                
                 <!-- 환자 정보 -->
                 <div class="form-card">
                     <div class="form-section">
@@ -609,11 +611,13 @@
         const selectedFileDiv = document.getElementById('selected-file');
         const fileNameSpan = document.getElementById('file-name');
         
+        /* v2.3: 이전 검사 파일 기능 제거 (다중 날짜 자동 감지로 대체)
         // 이전 검사 파일 요소
         const prevFileInput = document.getElementById('prev-file-input');
         const prevFileUploadArea = document.getElementById('prev-file-upload-area');
         const prevSelectedFileDiv = document.getElementById('prev-selected-file');
         const prevFileNameSpan = document.getElementById('prev-file-name');
+        */
         
         const uploadForm = document.getElementById('upload-form');
         const submitBtn = document.getElementById('submit-btn');
@@ -637,6 +641,7 @@
             fileInput.click();
         });
         
+        /* v2.3: 이전 검사 파일 기능 제거
         // 이전 검사 파일 업로드 영역 클릭
         prevFileUploadArea.addEventListener('click', () => {
             prevFileInput.click();
@@ -650,6 +655,7 @@
                 prevSelectedFileDiv.style.display = 'block';
             }
         });
+        */
         
         // 파일 선택 시 미리보기 생성
         fileInput.addEventListener('change', async (e) => {

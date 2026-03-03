@@ -73,26 +73,15 @@ def upload_file():
         # 먼저 다중 날짜 파일인지 확인
         multi_date_data = parse_multi_date_excel(filepath)
         
-        comparison_data = None
-        comparison_summary = None
+        # 비교 데이터는 내부적으로만 사용 (PDF에는 표시 안함)
         parsed_data = None
         
         if multi_date_data:
             # 다중 날짜 파일인 경우
             print(f"✅ 다중 날짜 파일 감지: {len(multi_date_data['dates'])}개 날짜")
             
-            # 최신 및 이전 검사 추출
-            current_tests, previous_tests = get_latest_and_previous_tests(multi_date_data)
-            
-            if current_tests and previous_tests:
-                print(f"📊 자동 비교: 최신({len(current_tests)}개) vs 이전({len(previous_tests)}개)")
-                
-                # 비교 수행
-                comparison_data = compare_test_results(
-                    current_tests=current_tests,
-                    previous_tests=previous_tests
-                )
-                comparison_summary = generate_comparison_summary(comparison_data)
+            # 최신 검사만 사용
+            current_tests, _ = get_latest_and_previous_tests(multi_date_data)
             
             # parsed_data 형식으로 변환
             parsed_data = {
@@ -103,26 +92,6 @@ def upload_file():
             # 기존 단일 결과 파일
             print("📋 단일 결과 파일")
             parsed_data = parse_excel_file(filepath)
-        
-        # 이전 검사 파일 처리 (별도 파일이 업로드된 경우, 다중 날짜가 아닐 때만)
-        if not multi_date_data and 'prev_file' in request.files:
-            prev_file = request.files['prev_file']
-            if prev_file.filename != '' and allowed_file(prev_file.filename):
-                # 이전 파일 저장
-                prev_filename = secure_filename(prev_file.filename)
-                prev_filename = f"{timestamp}_prev_{prev_filename}"
-                prev_filepath = os.path.join(app.config['UPLOAD_FOLDER'], prev_filename)
-                prev_file.save(prev_filepath)
-                
-                # 이전 파일 파싱
-                prev_parsed_data = parse_excel_file(prev_filepath)
-                
-                # 검사 결과 비교
-                comparison_data = compare_test_results(
-                    current_tests=parsed_data['tests'],
-                    previous_tests=prev_parsed_data['tests']
-                )
-                comparison_summary = generate_comparison_summary(comparison_data)
         
         # 당뇨 유무 확인
         has_diabetes = request.form.get('has_diabetes') == '1'
@@ -152,7 +121,7 @@ def upload_file():
         # 출력 형식
         output_format = request.form.get('output_format', 'pdf')
         
-        # 리포트 생성
+        # 리포트 생성 (비교 데이터는 전달하지 않음)
         output_file = generate_report(
             analysis_data=analysis,
             patient_info=patient_info,
@@ -160,8 +129,8 @@ def upload_file():
             output_format=output_format,
             output_dir=app.config['OUTPUT_FOLDER'],
             include_recommendations=include_recommendations,
-            comparison_data=comparison_data,
-            comparison_summary=comparison_summary
+            comparison_data=None,
+            comparison_summary=None
         )
         
         # 생성된 파일 반환
@@ -201,19 +170,11 @@ def preview_report():
         # 먼저 다중 날짜 파일인지 확인
         multi_date_data = parse_multi_date_excel(filepath)
         
-        comparison_summary = None
         parsed_data = None
         
         if multi_date_data:
-            # 다중 날짜 파일인 경우
-            current_tests, previous_tests = get_latest_and_previous_tests(multi_date_data)
-            
-            if current_tests and previous_tests:
-                comparison_data = compare_test_results(
-                    current_tests=current_tests,
-                    previous_tests=previous_tests
-                )
-                comparison_summary = generate_comparison_summary(comparison_data)
+            # 다중 날짜 파일인 경우 - 최신 검사만 사용
+            current_tests, _ = get_latest_and_previous_tests(multi_date_data)
             
             parsed_data = {
                 'tests': current_tests if current_tests else [],
@@ -223,30 +184,13 @@ def preview_report():
             # 기존 단일 결과 파일
             parsed_data = parse_excel_file(filepath)
         
-        # 이전 검사 파일 처리 (미리보기용, 선택적, 단일 결과 파일인 경우만)
-        if not multi_date_data and 'prev_file' in request.files:
-            prev_file = request.files['prev_file']
-            if prev_file.filename != '' and allowed_file(prev_file.filename):
-                prev_filename = secure_filename(prev_file.filename)
-                prev_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                prev_filename = f"{prev_timestamp}_prev_{prev_filename}"
-                prev_filepath = os.path.join(app.config['UPLOAD_FOLDER'], prev_filename)
-                prev_file.save(prev_filepath)
-                
-                prev_parsed_data = parse_excel_file(prev_filepath)
-                comparison_data = compare_test_results(
-                    current_tests=parsed_data['tests'],
-                    previous_tests=prev_parsed_data['tests']
-                )
-                comparison_summary = generate_comparison_summary(comparison_data)
-        
         # 당뇨 유무는 미리보기에서 확인 불가 (기본값: False)
         has_diabetes = False
         
         # 검사 결과 분석 (당뇨 유무 전달)
         analysis = analyze_test_results(parsed_data['tests'], has_diabetes=has_diabetes)
         
-        # 분석 결과 반환
+        # 분석 결과 반환 (비교 데이터 제외)
         response_data = {
             'success': True,
             'patient_info': parsed_data['patient_info'],
@@ -262,10 +206,6 @@ def preview_report():
             'recommendations': analysis['recommendations'],
             'filename': filename
         }
-        
-        # 비교 요약이 있으면 추가
-        if comparison_summary:
-            response_data['comparison_summary'] = comparison_summary
         
         return jsonify(response_data)
     

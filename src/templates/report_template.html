@@ -616,46 +616,6 @@
         </div>
         {% endif %}
         
-        <!-- 검사 비교 요약 (이전 검사가 있는 경우) -->
-        {% if comparison_summary %}
-        <div class="comparison-summary">
-            <h3>📊 이전 검사 대비 변화</h3>
-            <div class="comparison-grid">
-                <div class="comparison-stat improved">
-                    <div class="comparison-stat-number">{{ comparison_summary.improved_count }}</div>
-                    <div class="comparison-stat-label">개선</div>
-                </div>
-                <div class="comparison-stat worsened">
-                    <div class="comparison-stat-number">{{ comparison_summary.worsened_count }}</div>
-                    <div class="comparison-stat-label">악화</div>
-                </div>
-                <div class="comparison-stat stable">
-                    <div class="comparison-stat-number">{{ comparison_summary.stable_count }}</div>
-                    <div class="comparison-stat-label">유지</div>
-                </div>
-                <div class="comparison-stat">
-                    <div class="comparison-stat-number">{{ comparison_summary.total_compared }}</div>
-                    <div class="comparison-stat-label">비교 항목</div>
-                </div>
-            </div>
-            {% if comparison_summary.significant_changes and comparison_summary.significant_changes|length > 0 %}
-            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
-                <div style="font-size: 14px; font-weight: 600; color: #2c5f7f; margin-bottom: 6px;">주요 변화</div>
-                <ul style="list-style: none; padding: 0; margin: 0;">
-                    {% for change in comparison_summary.significant_changes %}
-                    <li style="padding: 4px 0; font-size: 13px;">
-                        <strong>{{ change.name }}</strong>
-                        <span class="test-change {{ change.trend }}">
-                            {% if change.trend == 'improved' %}✅ 개선{% elif change.trend == 'worsened' %}⚠️ 악화{% elif change.trend == 'stable' %}➡️ 유지{% else %}🔄 변화{% endif %}
-                        </span>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-        </div>
-        {% endif %}
-        
         <!-- 권장사항 -->
         {% if recommendations and recommendations|length > 0 %}
         <div class="recommendations">
@@ -684,7 +644,6 @@
                 {% for test in group_data.tests %}
                 {% set result_str = test.result|string|upper %}
                 {% set is_text = 'NEGATIVE' in result_str or 'POSITIVE' in result_str or 'TRACE' in result_str or 'NOT FOUND' in result_str or 'NORMAL' in result_str or 'ABNORMAL' in result_str %}
-                {% set comp = comparison_data[test.name] if comparison_data and test.name in comparison_data else None %}
                 <div class="test-row {% if test.is_abnormal %}abnormal{% endif %}">
                     <div class="test-name">{{ test.name }}</div>
                     <div class="test-result {% if test.is_abnormal %}abnormal{% else %}normal{% endif %} {% if is_text %}text-result{% endif %}">
@@ -696,15 +655,6 @@
                         <span class="direction">↑</span>
                         {% elif test.direction == 'low' %}
                         <span class="direction">↓</span>
-                        {% endif %}
-                        
-                        {% if comp and comp.has_comparison and comp.previous %}
-                        <div class="test-comparison">
-                            <span class="test-previous">이전: {{ comp.previous.result }}</span>
-                            <span class="test-change {{ comp.trend }}">
-                                {% if comp.trend == 'improved' %}✅{% elif comp.trend == 'worsened' %}⚠️{% elif comp.trend == 'stable' %}➡️{% elif comp.trend == 'changed' %}🔄{% endif %}
-                            </span>
-                        </div>
                         {% endif %}
                     </div>
                     <div class="test-reference">
