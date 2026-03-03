@@ -303,6 +303,76 @@
             color: #e65100;
         }
         
+        /* 검사 그룹 미리보기 */
+        .preview-test-group {
+            margin-bottom: 15px;
+        }
+        
+        .preview-group-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .preview-group-badge {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .preview-test-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.2fr;
+            gap: 10px;
+            padding: 8px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+            align-items: center;
+        }
+        
+        .preview-test-item:last-child {
+            border-bottom: none;
+        }
+        
+        .preview-test-name {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .preview-test-result {
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        
+        .preview-test-result.abnormal {
+            color: #c9665f;
+        }
+        
+        .preview-test-result.normal {
+            color: #5a9367;
+        }
+        
+        .preview-test-reference {
+            color: #999;
+            font-size: 12px;
+            text-align: right;
+        }
+        
+        .preview-direction {
+            color: #c9665f;
+            font-weight: 900;
+            margin-left: 4px;
+        }
+        
         .loading {
             text-align: center;
             padding: 20px;
@@ -525,6 +595,9 @@
                         <ul class="preview-list" id="recommendations-list">
                         </ul>
                     </div>
+                    
+                    <!-- 검사 결과 상세 -->
+                    <div id="test-groups-preview"></div>
                 </div>
             </div>
         </div>
@@ -686,6 +759,68 @@
             recommendationsList.innerHTML = data.recommendations.map(rec => 
                 `<li>${rec}</li>`
             ).join('');
+            
+            // 검사 결과 상세 (그룹별)
+            const testGroupsPreview = document.getElementById('test-groups-preview');
+            let groupsHTML = '';
+            
+            // 그룹 순서 정의
+            const groupOrder = ['liver', 'kidney', 'diabetes', 'lipid', 'blood', 'thyroid', 'electrolyte', 'urine', 'other'];
+            
+            // 정렬된 그룹 처리
+            groupOrder.forEach(groupKey => {
+                if (data.grouped_tests[groupKey]) {
+                    const group = data.grouped_tests[groupKey];
+                    const groupInfo = group.info;
+                    
+                    // 그룹 헤더
+                    groupsHTML += `
+                        <div class="preview-card preview-test-group">
+                            <div class="preview-group-header" style="background: linear-gradient(135deg, ${groupInfo.color} 0%, ${groupInfo.color}dd 100%);">
+                                <span>${groupInfo.icon} ${groupInfo.name}</span>
+                                <span class="preview-group-badge">
+                                    ${group.abnormal_count > 0 ? '⚠️ 주의 ' + group.abnormal_count : '✓ 정상'}
+                                </span>
+                            </div>
+                            <div>
+                    `;
+                    
+                    // 검사 항목들 (최대 10개만 표시)
+                    const displayTests = group.tests.slice(0, 10);
+                    displayTests.forEach(test => {
+                        const isAbnormal = test.is_abnormal;
+                        const resultClass = isAbnormal ? 'abnormal' : 'normal';
+                        const direction = test.direction === 'high' ? '↑' : test.direction === 'low' ? '↓' : '';
+                        
+                        groupsHTML += `
+                            <div class="preview-test-item">
+                                <div class="preview-test-name">${test.name}</div>
+                                <div class="preview-test-result ${resultClass}">
+                                    ${test.result} ${test.unit || ''}
+                                    ${direction ? `<span class="preview-direction">${direction}</span>` : ''}
+                                </div>
+                                <div class="preview-test-reference">참고: ${test.reference} ${test.unit || ''}</div>
+                            </div>
+                        `;
+                    });
+                    
+                    // 더 많은 항목이 있으면 표시
+                    if (group.tests.length > 10) {
+                        groupsHTML += `
+                            <div style="padding: 8px 12px; text-align: center; color: #999; font-size: 12px;">
+                                ... 외 ${group.tests.length - 10}개 항목
+                            </div>
+                        `;
+                    }
+                    
+                    groupsHTML += `
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            testGroupsPreview.innerHTML = groupsHTML;
             
             previewData.style.display = 'block';
         }

@@ -644,10 +644,9 @@
                 <ul style="list-style: none; padding: 0; margin: 0;">
                     {% for change in comparison_summary.significant_changes %}
                     <li style="padding: 4px 0; font-size: 13px;">
-                        <strong>{{ change.name }}</strong>: 
+                        <strong>{{ change.name }}</strong>
                         <span class="test-change {{ change.trend }}">
-                            {% if change.change_percent > 0 %}+{% endif %}{{ "%.1f"|format(change.change_percent) }}%
-                            {% if change.trend == 'improved' %}✅{% elif change.trend == 'worsened' %}⚠️{% elif change.trend == 'stable' %}➡️{% endif %}
+                            {% if change.trend == 'improved' %}✅ 개선{% elif change.trend == 'worsened' %}⚠️ 악화{% elif change.trend == 'stable' %}➡️ 유지{% else %}🔄 변화{% endif %}
                         </span>
                     </li>
                     {% endfor %}
@@ -702,12 +701,9 @@
                         {% if comp and comp.has_comparison and comp.previous %}
                         <div class="test-comparison">
                             <span class="test-previous">이전: {{ comp.previous.result }}</span>
-                            {% if comp.change_percent is not none %}
                             <span class="test-change {{ comp.trend }}">
-                                {% if comp.change_percent > 0 %}+{% endif %}{{ "%.1f"|format(comp.change_percent) }}%
                                 {% if comp.trend == 'improved' %}✅{% elif comp.trend == 'worsened' %}⚠️{% elif comp.trend == 'stable' %}➡️{% elif comp.trend == 'changed' %}🔄{% endif %}
                             </span>
-                            {% endif %}
                         </div>
                         {% endif %}
                     </div>
