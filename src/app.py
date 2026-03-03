@@ -13,6 +13,7 @@ from werkzeug.utils import secure_filename
 sys.path.insert(0, os.path.dirname(__file__))
 
 from excel_parser import parse_excel_file
+from excel_parser_multi_date import parse_multi_date_excel, get_latest_and_previous_tests
 from report_analyzer import analyze_test_results
 from report_generator import generate_report
 from comparison import compare_test_results, generate_comparison_summary
@@ -69,15 +70,42 @@ def upload_file():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         
-        # 엑셀 파일 파싱
-        parsed_data = parse_excel_file(filepath)
+        # 먼저 다중 날짜 파일인지 확인
+        multi_date_data = parse_multi_date_excel(filepath)
         
-        # 이전 검사 파일 처리 (있는 경우)
         comparison_data = None
         comparison_summary = None
-        prev_filepath = None
+        parsed_data = None
         
-        if 'prev_file' in request.files:
+        if multi_date_data:
+            # 다중 날짜 파일인 경우
+            print(f"✅ 다중 날짜 파일 감지: {len(multi_date_data['dates'])}개 날짜")
+            
+            # 최신 및 이전 검사 추출
+            current_tests, previous_tests = get_latest_and_previous_tests(multi_date_data)
+            
+            if current_tests and previous_tests:
+                print(f"📊 자동 비교: 최신({len(current_tests)}개) vs 이전({len(previous_tests)}개)")
+                
+                # 비교 수행
+                comparison_data = compare_test_results(
+                    current_tests=current_tests,
+                    previous_tests=previous_tests
+                )
+                comparison_summary = generate_comparison_summary(comparison_data)
+            
+            # parsed_data 형식으로 변환
+            parsed_data = {
+                'tests': current_tests if current_tests else [],
+                'patient_info': multi_date_data['patient_info']
+            }
+        else:
+            # 기존 단일 결과 파일
+            print("📋 단일 결과 파일")
+            parsed_data = parse_excel_file(filepath)
+        
+        # 이전 검사 파일 처리 (별도 파일이 업로드된 경우, 다중 날짜가 아닐 때만)
+        if not multi_date_data and 'prev_file' in request.files:
             prev_file = request.files['prev_file']
             if prev_file.filename != '' and allowed_file(prev_file.filename):
                 # 이전 파일 저장
@@ -170,12 +198,33 @@ def preview_report():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         
-        # 엑셀 파일 파싱
-        parsed_data = parse_excel_file(filepath)
+        # 먼저 다중 날짜 파일인지 확인
+        multi_date_data = parse_multi_date_excel(filepath)
         
-        # 이전 검사 파일 처리 (미리보기용, 선택적)
         comparison_summary = None
-        if 'prev_file' in request.files:
+        parsed_data = None
+        
+        if multi_date_data:
+            # 다중 날짜 파일인 경우
+            current_tests, previous_tests = get_latest_and_previous_tests(multi_date_data)
+            
+            if current_tests and previous_tests:
+                comparison_data = compare_test_results(
+                    current_tests=current_tests,
+                    previous_tests=previous_tests
+                )
+                comparison_summary = generate_comparison_summary(comparison_data)
+            
+            parsed_data = {
+                'tests': current_tests if current_tests else [],
+                'patient_info': multi_date_data['patient_info']
+            }
+        else:
+            # 기존 단일 결과 파일
+            parsed_data = parse_excel_file(filepath)
+        
+        # 이전 검사 파일 처리 (미리보기용, 선택적, 단일 결과 파일인 경우만)
+        if not multi_date_data and 'prev_file' in request.files:
             prev_file = request.files['prev_file']
             if prev_file.filename != '' and allowed_file(prev_file.filename):
                 prev_filename = secure_filename(prev_file.filename)
