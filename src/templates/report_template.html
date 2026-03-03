@@ -387,6 +387,101 @@
             font-size: 13px;
         }
         
+        /* 검사 비교 섹션 */
+        .comparison-summary {
+            margin: 0 15px 10px 20px;
+            padding: 14px 18px;
+            background: #f0f8ff;
+            border-left: 4px solid #4682b4;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        
+        .comparison-summary h3 {
+            color: #2c5f7f;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .comparison-stat {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .comparison-stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .comparison-stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .comparison-stat.improved .comparison-stat-number {
+            color: #28a745;
+        }
+        
+        .comparison-stat.worsened .comparison-stat-number {
+            color: #dc3545;
+        }
+        
+        .comparison-stat.stable .comparison-stat-number {
+            color: #6c757d;
+        }
+        
+        .test-comparison {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-top: 4px;
+            color: #666;
+        }
+        
+        .test-previous {
+            color: #999;
+        }
+        
+        .test-change {
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .test-change.improved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .test-change.worsened {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .test-change.stable {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        
+        .test-change.new {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
         /* 푸터 - 플랫 */
         .report-footer {
             margin: 0 15px 8px 20px;
@@ -521,6 +616,47 @@
         </div>
         {% endif %}
         
+        <!-- 검사 비교 요약 (이전 검사가 있는 경우) -->
+        {% if comparison_summary %}
+        <div class="comparison-summary">
+            <h3>📊 이전 검사 대비 변화</h3>
+            <div class="comparison-grid">
+                <div class="comparison-stat improved">
+                    <div class="comparison-stat-number">{{ comparison_summary.improved_count }}</div>
+                    <div class="comparison-stat-label">개선</div>
+                </div>
+                <div class="comparison-stat worsened">
+                    <div class="comparison-stat-number">{{ comparison_summary.worsened_count }}</div>
+                    <div class="comparison-stat-label">악화</div>
+                </div>
+                <div class="comparison-stat stable">
+                    <div class="comparison-stat-number">{{ comparison_summary.stable_count }}</div>
+                    <div class="comparison-stat-label">유지</div>
+                </div>
+                <div class="comparison-stat">
+                    <div class="comparison-stat-number">{{ comparison_summary.total_compared }}</div>
+                    <div class="comparison-stat-label">비교 항목</div>
+                </div>
+            </div>
+            {% if comparison_summary.significant_changes and comparison_summary.significant_changes|length > 0 %}
+            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
+                <div style="font-size: 14px; font-weight: 600; color: #2c5f7f; margin-bottom: 6px;">주요 변화</div>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    {% for change in comparison_summary.significant_changes %}
+                    <li style="padding: 4px 0; font-size: 13px;">
+                        <strong>{{ change.name }}</strong>: 
+                        <span class="test-change {{ change.trend }}">
+                            {% if change.change_percent > 0 %}+{% endif %}{{ "%.1f"|format(change.change_percent) }}%
+                            {% if change.trend == 'improved' %}✅{% elif change.trend == 'worsened' %}⚠️{% elif change.trend == 'stable' %}➡️{% endif %}
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
         <!-- 권장사항 -->
         {% if recommendations and recommendations|length > 0 %}
         <div class="recommendations">
@@ -549,6 +685,7 @@
                 {% for test in group_data.tests %}
                 {% set result_str = test.result|string|upper %}
                 {% set is_text = 'NEGATIVE' in result_str or 'POSITIVE' in result_str or 'TRACE' in result_str or 'NOT FOUND' in result_str or 'NORMAL' in result_str or 'ABNORMAL' in result_str %}
+                {% set comp = comparison_data[test.name] if comparison_data and test.name in comparison_data else None %}
                 <div class="test-row {% if test.is_abnormal %}abnormal{% endif %}">
                     <div class="test-name">{{ test.name }}</div>
                     <div class="test-result {% if test.is_abnormal %}abnormal{% else %}normal{% endif %} {% if is_text %}text-result{% endif %}">
@@ -560,6 +697,18 @@
                         <span class="direction">↑</span>
                         {% elif test.direction == 'low' %}
                         <span class="direction">↓</span>
+                        {% endif %}
+                        
+                        {% if comp and comp.has_comparison and comp.previous %}
+                        <div class="test-comparison">
+                            <span class="test-previous">이전: {{ comp.previous.result }}</span>
+                            {% if comp.change_percent is not none %}
+                            <span class="test-change {{ comp.trend }}">
+                                {% if comp.change_percent > 0 %}+{% endif %}{{ "%.1f"|format(comp.change_percent) }}%
+                                {% if comp.trend == 'improved' %}✅{% elif comp.trend == 'worsened' %}⚠️{% elif comp.trend == 'stable' %}➡️{% elif comp.trend == 'changed' %}🔄{% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
                         {% endif %}
                     </div>
                     <div class="test-reference">

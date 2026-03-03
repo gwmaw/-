@@ -358,7 +358,7 @@
                 <!-- 파일 업로드 -->
                 <div class="form-card">
                     <div class="form-section">
-                        <h2>📎 파일 업로드</h2>
+                        <h2>📎 최신 검사 파일</h2>
                         <div class="file-upload" id="file-upload-area">
                             <div class="file-upload-icon">📄</div>
                             <div class="file-upload-text">클릭하거나 파일을 드래그하여 업로드</div>
@@ -371,6 +371,24 @@
                     </div>
                 </div>
                 
+                <!-- 이전 검사 파일 (선택) -->
+                <div class="form-card">
+                    <div class="form-section">
+                        <h2>📊 이전 검사 파일 (선택)</h2>
+                        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">
+                            이전 검사 파일을 업로드하면 변화 추이를 확인할 수 있습니다.
+                        </p>
+                        <div class="file-upload" id="prev-file-upload-area">
+                            <div class="file-upload-icon">📊</div>
+                            <div class="file-upload-text">이전 검사 파일 선택 (선택사항)</div>
+                        </div>
+                        <input type="file" id="prev-file-input" name="prev_file" accept=".xlsx,.xls">
+                        <div class="selected-file" id="prev-selected-file" style="display: none;">
+                            <span>✓ 선택됨: </span>
+                            <span id="prev-file-name"></span>
+                        </div>
+                    </div>
+                </div>                
                 <!-- 환자 정보 -->
                 <div class="form-card">
                     <div class="form-section">
@@ -517,6 +535,13 @@
         const fileUploadArea = document.getElementById('file-upload-area');
         const selectedFileDiv = document.getElementById('selected-file');
         const fileNameSpan = document.getElementById('file-name');
+        
+        // 이전 검사 파일 요소
+        const prevFileInput = document.getElementById('prev-file-input');
+        const prevFileUploadArea = document.getElementById('prev-file-upload-area');
+        const prevSelectedFileDiv = document.getElementById('prev-selected-file');
+        const prevFileNameSpan = document.getElementById('prev-file-name');
+        
         const uploadForm = document.getElementById('upload-form');
         const submitBtn = document.getElementById('submit-btn');
         const previewLoading = document.getElementById('preview-loading');
@@ -534,9 +559,23 @@
             }
         });
         
-        // 파일 업로드 영역 클릭
+        // 최신 검사 파일 업로드 영역 클릭
         fileUploadArea.addEventListener('click', () => {
             fileInput.click();
+        });
+        
+        // 이전 검사 파일 업로드 영역 클릭
+        prevFileUploadArea.addEventListener('click', () => {
+            prevFileInput.click();
+        });
+        
+        // 이전 검사 파일 선택
+        prevFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                prevFileNameSpan.textContent = file.name;
+                prevSelectedFileDiv.style.display = 'block';
+            }
         });
         
         // 파일 선택 시 미리보기 생성

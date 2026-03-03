@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from excel_parser import parse_excel_file
 from report_analyzer import analyze_test_results
 from report_generator import generate_report
+from comparison import compare_test_results, generate_comparison_summary
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'medical-report-generator-2024'
@@ -71,6 +72,30 @@ def upload_file():
         # 엑셀 파일 파싱
         parsed_data = parse_excel_file(filepath)
         
+        # 이전 검사 파일 처리 (있는 경우)
+        comparison_data = None
+        comparison_summary = None
+        prev_filepath = None
+        
+        if 'prev_file' in request.files:
+            prev_file = request.files['prev_file']
+            if prev_file.filename != '' and allowed_file(prev_file.filename):
+                # 이전 파일 저장
+                prev_filename = secure_filename(prev_file.filename)
+                prev_filename = f"{timestamp}_prev_{prev_filename}"
+                prev_filepath = os.path.join(app.config['UPLOAD_FOLDER'], prev_filename)
+                prev_file.save(prev_filepath)
+                
+                # 이전 파일 파싱
+                prev_parsed_data = parse_excel_file(prev_filepath)
+                
+                # 검사 결과 비교
+                comparison_data = compare_test_results(
+                    current_tests=parsed_data['tests'],
+                    previous_tests=prev_parsed_data['tests']
+                )
+                comparison_summary = generate_comparison_summary(comparison_data)
+        
         # 당뇨 유무 확인
         has_diabetes = request.form.get('has_diabetes') == '1'
         
@@ -106,7 +131,9 @@ def upload_file():
             doctor_comment=doctor_comment,
             output_format=output_format,
             output_dir=app.config['OUTPUT_FOLDER'],
-            include_recommendations=include_recommendations
+            include_recommendations=include_recommendations,
+            comparison_data=comparison_data,
+            comparison_summary=comparison_summary
         )
         
         # 생성된 파일 반환
@@ -146,6 +173,24 @@ def preview_report():
         # 엑셀 파일 파싱
         parsed_data = parse_excel_file(filepath)
         
+        # 이전 검사 파일 처리 (미리보기용, 선택적)
+        comparison_summary = None
+        if 'prev_file' in request.files:
+            prev_file = request.files['prev_file']
+            if prev_file.filename != '' and allowed_file(prev_file.filename):
+                prev_filename = secure_filename(prev_file.filename)
+                prev_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                prev_filename = f"{prev_timestamp}_prev_{prev_filename}"
+                prev_filepath = os.path.join(app.config['UPLOAD_FOLDER'], prev_filename)
+                prev_file.save(prev_filepath)
+                
+                prev_parsed_data = parse_excel_file(prev_filepath)
+                comparison_data = compare_test_results(
+                    current_tests=parsed_data['tests'],
+                    previous_tests=prev_parsed_data['tests']
+                )
+                comparison_summary = generate_comparison_summary(comparison_data)
+        
         # 당뇨 유무는 미리보기에서 확인 불가 (기본값: False)
         has_diabetes = False
         
@@ -153,7 +198,7 @@ def preview_report():
         analysis = analyze_test_results(parsed_data['tests'], has_diabetes=has_diabetes)
         
         # 분석 결과 반환
-        return jsonify({
+        response_data = {
             'success': True,
             'patient_info': parsed_data['patient_info'],
             'summary': analysis['summary'],
@@ -167,7 +212,13 @@ def preview_report():
             },
             'recommendations': analysis['recommendations'],
             'filename': filename
-        })
+        }
+        
+        # 비교 요약이 있으면 추가
+        if comparison_summary:
+            response_data['comparison_summary'] = comparison_summary
+        
+        return jsonify(response_data)
     
     except Exception as e:
         return jsonify({'error': f'미리보기 생성 중 오류: {str(e)}'}), 500

@@ -16,7 +16,7 @@ class ReportGenerator:
         self.template_dir = template_dir
         self.env = Environment(loader=FileSystemLoader(template_dir))
     
-    def generate_html(self, data, doctor_comment='', logo_path=''):
+    def generate_html(self, data, doctor_comment='', logo_path='', comparison_data=None, comparison_summary=None):
         """HTML 리포트 생성"""
         template = self.env.get_template('report_template.html')
         
@@ -52,7 +52,9 @@ class ReportGenerator:
             'summary': data['summary'],
             'recommendations': data.get('recommendations', []),
             'doctor_comment': doctor_comment,
-            'logo_path': logo_base64
+            'logo_path': logo_base64,
+            'comparison_data': comparison_data,
+            'comparison_summary': comparison_summary
         }
         
         html_content = template.render(**template_data)
@@ -193,7 +195,7 @@ class ReportGenerator:
 
 def generate_report(analysis_data, patient_info, doctor_comment='', 
                    output_format='pdf', output_dir='output', filename=None,
-                   include_recommendations=True):
+                   include_recommendations=True, comparison_data=None, comparison_summary=None):
     """
     리포트 생성 헬퍼 함수
     
@@ -205,6 +207,8 @@ def generate_report(analysis_data, patient_info, doctor_comment='',
         output_dir: 출력 디렉토리
         filename: 파일명 (없으면 자동 생성)
         include_recommendations: 권장사항 포함 여부 (기본값: True)
+        comparison_data: 이전 검사 비교 데이터 (선택)
+        comparison_summary: 비교 요약 (선택)
     
     Returns:
         생성된 파일 경로
@@ -228,7 +232,13 @@ def generate_report(analysis_data, patient_info, doctor_comment='',
     }
     
     # HTML 생성
-    html_content = generator.generate_html(report_data, doctor_comment, logo_path)
+    html_content = generator.generate_html(
+        report_data, 
+        doctor_comment, 
+        logo_path,
+        comparison_data,
+        comparison_summary
+    )
     
     # 출력 디렉토리 생성
     os.makedirs(output_dir, exist_ok=True)
