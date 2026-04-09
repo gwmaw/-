@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>검사 결과 리포트</title>
-    <style>
+        <style>
         * {
             margin: 0;
             padding: 0;
@@ -12,117 +12,159 @@
         }
         
         body {
-            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
-            background: #f5f5f5;
-            line-height: 1.6;
+            font-family: 'Segoe UI', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.5;
             color: #333;
+        }
+        
+        @page {
+            background-color: #f5f5f5;
         }
         
         .report-container {
             max-width: 800px;
             margin: 0 auto;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 8px 0;
+            background: transparent;
+            box-shadow: none;
         }
         
-        /* 헤더 */
+        /* 헤더 - 크게 조정 */
         .report-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px 20px;
+            margin: 0 15px 8px 15px;
+            background: white;
+            padding: 20px 20px 16px 20px;
             text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        
+        .hospital-logo {
+            width: auto;
+            max-width: 300px;
+            height: 50px;
+            margin-bottom: 10px;
+            object-fit: contain;
+        }
+        
+        .header-divider {
+            height: 4px;
+            background: linear-gradient(90deg, #002f87 0%, #e60012 100%);
+            margin: 12px 0;
+            border-radius: 2px;
         }
         
         .report-header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: 26px;
+            margin-bottom: 4px;
+            font-weight: 700;
+            color: #002f87;
+            letter-spacing: 1px;
         }
         
         .report-date {
             font-size: 14px;
-            opacity: 0.9;
+            color: #666;
+            margin-top: 6px;
         }
         
-        /* 환자 정보 */
+        /* 환자 정보 - 플랫 */
         .patient-info {
-            padding: 20px;
-            background: #f8f9fa;
-            border-bottom: 2px solid #e9ecef;
+            margin: 0 15px 8px 15px;
+            padding: 12px 16px;
+            background: #e8eef2;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
         }
         
         .patient-info-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 10px;
         }
         
         .info-item {
-            font-size: 14px;
+            font-size: 13px;
         }
         
         .info-label {
-            color: #6c757d;
-            font-weight: 600;
-            margin-bottom: 5px;
+            color: #002f87;
+            font-weight: 700;
+            margin-bottom: 3px;
+            font-size: 12px;
         }
         
         .info-value {
-            font-size: 16px;
+            font-size: 14px;
             color: #212529;
+            font-weight: 600;
         }
         
-        /* 요약 섹션 */
+        /* 요약 섹션 - 플랫 */
         .summary-section {
-            padding: 25px 20px;
+            margin: 0 15px 10px 20px;
+            padding: 16px 18px 12px 18px;
             background: white;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
         }
         
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
         
+        /* 통계 카드 - 진중한 톤의 단색 */
         .summary-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 12px;
-            padding: 20px;
+            background: #5b8db8;  /* 차분한 블루 */
+            border-radius: 8px;
+            padding: 15px 10px;
             text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 3px 6px rgba(0, 0, 0, 0.2);
         }
         
         .summary-card.normal {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            background: #5a9367;  /* 차분한 그린 */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 3px 6px rgba(0, 0, 0, 0.2);
         }
         
         .summary-card.abnormal {
-            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            background: #c9665f;  /* 차분한 코랄 */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 3px 6px rgba(0, 0, 0, 0.2);
         }
         
         .summary-number {
             font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 900;
+            margin-bottom: 3px;
+            color: white;
+            line-height: 1;
         }
         
         .summary-label {
-            font-size: 14px;
-            color: #555;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
         }
         
-        /* 이상 소견 알림 */
+        /* 주의 항목 - 플랫 */
         .abnormal-alert {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
+            margin: 0 15px 10px 20px;
+            background: white;
+            border-left: 4px solid #e60012;
+            padding: 14px 18px;
             border-radius: 8px;
-            margin-top: 15px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
         }
         
         .abnormal-alert h3 {
-            color: #856404;
-            font-size: 16px;
-            margin-bottom: 10px;
+            color: #e60012;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
         
         .abnormal-alert ul {
@@ -132,35 +174,50 @@
         
         .abnormal-alert li {
             padding: 5px 0;
-            color: #856404;
-            font-size: 14px;
+            padding-left: 20px;
+            color: #333;
+            font-size: 13px;
+            font-weight: 500;
+            position: relative;
         }
         
-        /* 검사 그룹 */
+        .abnormal-alert li:before {
+            content: "●";
+            position: absolute;
+            left: 0;
+            color: #e60012;
+            font-size: 12px;
+        }
+        
+        /* 검사 그룹 - 플랫 */
         .test-group {
-            margin-bottom: 20px;
-            border-radius: 12px;
+            margin: 0 15px 16px 20px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
+            background: white;
         }
         
         .group-header {
-            padding: 15px 20px;
-            background: #f8f9fa;
-            border-left: 5px solid #667eea;
+            padding: 10px 14px;
+            background: linear-gradient(to right, #f8f9fa 0%, white 100%);
             display: flex;
             align-items: center;
             gap: 10px;
+            border-bottom: 2px solid #dee2e6;
+            border-left: 4px solid #5b8db8;
         }
         
         .group-icon {
-            font-size: 24px;
+            display: none;
         }
         
         .group-title {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 17px;
+            font-weight: 700;
             flex: 1;
+            color: #002f87;
+            letter-spacing: 0.3px;
         }
         
         .group-badge {
@@ -168,15 +225,14 @@
             color: white;
             padding: 4px 12px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
         
         .group-badge.normal {
-            background: #28a745;
+            background: #6c757d;
         }
         
-        /* 검사 항목 테이블 */
         .test-table {
             width: 100%;
             background: white;
@@ -184,10 +240,27 @@
         
         .test-row {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            padding: 15px 20px;
+            grid-template-columns: 2.2fr 1.2fr 1.3fr;
+            padding: 14px 16px;
             border-bottom: 1px solid #e9ecef;
             align-items: center;
+            gap: 2px;
+        }
+        
+        .test-group.urine-group .test-row {
+            padding: 12px 14px;
+        }
+        
+        .test-group.urine-group .test-name {
+            font-size: 18px;
+        }
+        
+        .test-group.urine-group .test-result {
+            font-size: 20px;
+        }
+        
+        .test-group.urine-group .test-reference {
+            font-size: 14px;
         }
         
         .test-row:last-child {
@@ -195,19 +268,29 @@
         }
         
         .test-row.abnormal {
-            background: #ffebee;
+            background: white;
         }
         
         .test-name {
             font-weight: 600;
-            font-size: 15px;
+            font-size: 20px;
             color: #212529;
+            line-height: 1.4;
         }
         
         .test-result {
             text-align: center;
-            font-size: 16px;
+            font-size: 22px;
             font-weight: 700;
+            line-height: 1.3;
+        }
+        
+        /* 영어 결과값(단위 없음)은 작고 가볍게 */
+        .test-result.text-result {
+            font-size: 12px;
+            font-weight: 400;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            letter-spacing: 0.2px;
         }
         
         .test-result.abnormal {
@@ -215,64 +298,70 @@
         }
         
         .test-result.normal {
-            color: #28a745;
+            color: #555;
         }
         
         .test-result .direction {
-            font-size: 12px;
+            font-size: 18px;
             margin-left: 5px;
+            font-weight: 900;
         }
         
         .test-reference {
             text-align: right;
-            font-size: 13px;
-            color: #6c757d;
+            font-size: 15px;
+            color: #868e96;
+            line-height: 1.4;
+            font-weight: 400;
         }
         
         .test-unit {
-            font-size: 12px;
+            font-size: 15px;
             color: #868e96;
-            margin-left: 3px;
+            margin-left: 2px;
         }
         
-        /* 의료진 코멘트 */
+        /* 의료진 코멘트 - 플랫 */
         .doctor-comment {
-            margin: 20px;
-            padding: 20px;
-            background: #e7f3ff;
-            border-left: 4px solid #2196F3;
+            margin: 0 15px 10px 20px;
+            padding: 14px 18px;
+            background: white;
+            border-left: 4px solid #002f87;
             border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
         }
         
         .doctor-comment h3 {
-            color: #1976D2;
-            font-size: 16px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            color: #002f87;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
         
         .doctor-comment p {
             color: #555;
-            font-size: 14px;
-            line-height: 1.8;
+            font-size: 17px;
+            line-height: 1.6;
             white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         
-        /* 권장사항 */
+        /* 권장사항 - 플랫 */
         .recommendations {
-            margin: 20px;
-            padding: 20px;
-            background: #f1f8e9;
-            border-left: 4px solid #8bc34a;
+            margin: 0 15px 10px 20px;
+            padding: 14px 18px;
+            background: white;
+            border-left: 4px solid #5a9367;
             border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
         }
         
         .recommendations h3 {
-            color: #558b2f;
-            font-size: 16px;
-            margin-bottom: 10px;
+            color: #3d6e4e;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
         
         .recommendations ul {
@@ -281,11 +370,11 @@
         }
         
         .recommendations li {
-            padding: 8px 0;
-            padding-left: 25px;
+            padding: 5px 0;
+            padding-left: 20px;
             position: relative;
             color: #555;
-            font-size: 14px;
+            font-size: 17px;
             line-height: 1.6;
         }
         
@@ -293,38 +382,141 @@
             content: "✓";
             position: absolute;
             left: 0;
-            color: #8bc34a;
-            font-weight: bold;
+            color: #5a9367;
+            font-weight: 900;
+            font-size: 13px;
         }
         
-        /* 푸터 */
-        .report-footer {
-            padding: 20px;
+        /* 검사 비교 섹션 */
+        .comparison-summary {
+            margin: 0 15px 10px 20px;
+            padding: 14px 18px;
+            background: #f0f8ff;
+            border-left: 4px solid #4682b4;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        
+        .comparison-summary h3 {
+            color: #2c5f7f;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .comparison-stat {
             text-align: center;
-            background: #f8f9fa;
-            border-top: 2px solid #e9ecef;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .comparison-stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .comparison-stat-label {
             font-size: 12px;
+            color: #666;
+        }
+        
+        .comparison-stat.improved .comparison-stat-number {
+            color: #28a745;
+        }
+        
+        .comparison-stat.worsened .comparison-stat-number {
+            color: #dc3545;
+        }
+        
+        .comparison-stat.stable .comparison-stat-number {
             color: #6c757d;
         }
         
-        /* 모바일 최적화 */
-        @media (max-width: 600px) {
+        .test-comparison {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-top: 4px;
+            color: #666;
+        }
+        
+        .test-previous {
+            color: #999;
+        }
+        
+        .test-change {
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .test-change.improved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .test-change.worsened {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .test-change.stable {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        
+        .test-change.new {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        /* 푸터 - 플랫 */
+        .report-footer {
+            margin: 0 15px 8px 20px;
+            padding: 12px 16px;
+            text-align: center;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
+            font-size: 11px;
+            color: #6c757d;
+        }
+        
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
             .report-header h1 {
-                font-size: 24px;
+                font-size: 20px;
             }
             
             .patient-info-grid {
                 grid-template-columns: 1fr;
-                gap: 10px;
+                gap: 8px;
             }
             
             .summary-cards {
                 grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .summary-number {
+                font-size: 32px;
             }
             
             .test-row {
                 grid-template-columns: 1fr;
-                gap: 8px;
+                gap: 6px;
             }
             
             .test-reference {
@@ -339,7 +531,7 @@
         /* 인쇄용 스타일 */
         @media print {
             body {
-                background: white;
+                background: #f5f5f5;
             }
             
             .report-container {
@@ -356,7 +548,9 @@
     <div class="report-container">
         <!-- 헤더 -->
         <div class="report-header">
-            <h1>🏥 검사 결과 리포트</h1>
+            <img src="{{ logo_path }}" alt="병원 로고" class="hospital-logo">
+            <div class="header-divider"></div>
+            <h1>검사 결과 리포트</h1>
             <div class="report-date">검사일: {{ report_date }}</div>
         </div>
         
@@ -398,24 +592,46 @@
                     <div class="summary-label">주의</div>
                 </div>
             </div>
-            
-            {% if summary.abnormal > 0 %}
-            <div class="abnormal-alert">
-                <h3>⚠️ 주의가 필요한 항목</h3>
-                <ul>
-                    {% for group in summary.abnormal_groups %}
-                    <li>{{ group.icon }} {{ group.name }}: {{ group.count }}개 항목</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
         </div>
+        
+        <!-- 주의 항목 -->
+        {% if summary.abnormal > 0 %}
+        <div class="abnormal-alert">
+            <h3>주의가 필요한 항목</h3>
+            <ul>
+                {% for group in summary.abnormal_groups %}
+                <li>{{ group.name }}: {{ group.count }}개 항목</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <!-- 의료진 코멘트 -->
+        {% if doctor_comment %}
+        <div class="doctor-comment">
+            <h3>
+                <span>의료진 코멘트</span>
+            </h3>
+            <p>{{ doctor_comment }}</p>
+        </div>
+        {% endif %}
+        
+        <!-- 권장사항 -->
+        {% if recommendations and recommendations|length > 0 %}
+        <div class="recommendations">
+            <h3>권장사항</h3>
+            <ul>
+                {% for recommendation in recommendations %}
+                <li>{{ recommendation }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
         
         <!-- 검사 결과 그룹 -->
         {% for group_key, group_data in grouped_tests.items() %}
-        <div class="test-group">
+        <div class="test-group {% if group_key == 'urine' %}urine-group{% endif %}" data-category="{{ group_key }}">
             <div class="group-header" style="border-left-color: {{ group_data.info.color }};">
-                <span class="group-icon">{{ group_data.info.icon }}</span>
                 <span class="group-title">{{ group_data.info.name }}</span>
                 {% if group_data.abnormal_count > 0 %}
                 <span class="group-badge">주의 {{ group_data.abnormal_count }}</span>
@@ -426,11 +642,15 @@
             
             <div class="test-table">
                 {% for test in group_data.tests %}
+                {% set result_str = test.result|string|upper %}
+                {% set is_text = 'NEGATIVE' in result_str or 'POSITIVE' in result_str or 'TRACE' in result_str or 'NOT FOUND' in result_str or 'NORMAL' in result_str or 'ABNORMAL' in result_str %}
                 <div class="test-row {% if test.is_abnormal %}abnormal{% endif %}">
                     <div class="test-name">{{ test.name }}</div>
-                    <div class="test-result {% if test.is_abnormal %}abnormal{% else %}normal{% endif %}">
+                    <div class="test-result {% if test.is_abnormal %}abnormal{% else %}normal{% endif %} {% if is_text %}text-result{% endif %}">
                         {{ test.result }}
+                        {% if test.unit and test.unit != '' %}
                         <span class="test-unit">{{ test.unit }}</span>
+                        {% endif %}
                         {% if test.direction == 'high' %}
                         <span class="direction">↑</span>
                         {% elif test.direction == 'low' %}
@@ -445,27 +665,6 @@
             </div>
         </div>
         {% endfor %}
-        
-        <!-- 의료진 코멘트 -->
-        {% if doctor_comment %}
-        <div class="doctor-comment">
-            <h3>
-                <span>👨‍⚕️</span>
-                <span>의료진 코멘트</span>
-            </h3>
-            <p>{{ doctor_comment }}</p>
-        </div>
-        {% endif %}
-        
-        <!-- 권장사항 -->
-        <div class="recommendations">
-            <h3>💡 권장사항</h3>
-            <ul>
-                {% for recommendation in recommendations %}
-                <li>{{ recommendation }}</li>
-                {% endfor %}
-            </ul>
-        </div>
         
         <!-- 푸터 -->
         <div class="report-footer">

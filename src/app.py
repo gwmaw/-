@@ -13,8 +13,10 @@ from werkzeug.utils import secure_filename
 sys.path.insert(0, os.path.dirname(__file__))
 
 from excel_parser import parse_excel_file
+from excel_parser_multi_date import parse_multi_date_excel, get_latest_and_previous_tests
 from report_analyzer import analyze_test_results
 from report_generator import generate_report
+from comparison import compare_test_results, generate_comparison_summary
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'medical-report-generator-2024'
@@ -68,11 +70,34 @@ def upload_file():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         
-        # 엑셀 파일 파싱
-        parsed_data = parse_excel_file(filepath)
+        # 먼저 다중 날짜 파일인지 확인
+        multi_date_data = parse_multi_date_excel(filepath)
         
-        # 검사 결과 분석
-        analysis = analyze_test_results(parsed_data['tests'])
+        # 비교 데이터는 내부적으로만 사용 (PDF에는 표시 안함)
+        parsed_data = None
+        
+        if multi_date_data:
+            # 다중 날짜 파일인 경우
+            print(f"✅ 다중 날짜 파일 감지: {len(multi_date_data['dates'])}개 날짜")
+            
+            # 최신 검사만 사용
+            current_tests, _ = get_latest_and_previous_tests(multi_date_data)
+            
+            # parsed_data 형식으로 변환
+            parsed_data = {
+                'tests': current_tests if current_tests else [],
+                'patient_info': multi_date_data['patient_info']
+            }
+        else:
+            # 기존 단일 결과 파일
+            print("📋 단일 결과 파일")
+            parsed_data = parse_excel_file(filepath)
+        
+        # 당뇨 유무 확인
+        has_diabetes = request.form.get('has_diabetes') == '1'
+        
+        # 검사 결과 분석 (당뇨 유무 전달)
+        analysis = analyze_test_results(parsed_data['tests'], has_diabetes=has_diabetes)
         
         # 환자 정보 가져오기
         patient_info = parsed_data['patient_info']
@@ -90,16 +115,22 @@ def upload_file():
         # 의료진 코멘트
         doctor_comment = request.form.get('doctor_comment', '')
         
+        # 권장사항 포함 여부
+        include_recommendations = request.form.get('include_recommendations') == '1'
+        
         # 출력 형식
         output_format = request.form.get('output_format', 'pdf')
         
-        # 리포트 생성
+        # 리포트 생성 (비교 데이터는 전달하지 않음)
         output_file = generate_report(
             analysis_data=analysis,
             patient_info=patient_info,
             doctor_comment=doctor_comment,
             output_format=output_format,
-            output_dir=app.config['OUTPUT_FOLDER']
+            output_dir=app.config['OUTPUT_FOLDER'],
+            include_recommendations=include_recommendations,
+            comparison_data=None,
+            comparison_summary=None
         )
         
         # 생성된 파일 반환
@@ -136,14 +167,31 @@ def preview_report():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         
-        # 엑셀 파일 파싱
-        parsed_data = parse_excel_file(filepath)
+        # 먼저 다중 날짜 파일인지 확인
+        multi_date_data = parse_multi_date_excel(filepath)
         
-        # 검사 결과 분석
-        analysis = analyze_test_results(parsed_data['tests'])
+        parsed_data = None
         
-        # 분석 결과 반환
-        return jsonify({
+        if multi_date_data:
+            # 다중 날짜 파일인 경우 - 최신 검사만 사용
+            current_tests, _ = get_latest_and_previous_tests(multi_date_data)
+            
+            parsed_data = {
+                'tests': current_tests if current_tests else [],
+                'patient_info': multi_date_data['patient_info']
+            }
+        else:
+            # 기존 단일 결과 파일
+            parsed_data = parse_excel_file(filepath)
+        
+        # 당뇨 유무는 미리보기에서 확인 불가 (기본값: False)
+        has_diabetes = False
+        
+        # 검사 결과 분석 (당뇨 유무 전달)
+        analysis = analyze_test_results(parsed_data['tests'], has_diabetes=has_diabetes)
+        
+        # 분석 결과 반환 (비교 데이터 제외)
+        response_data = {
             'success': True,
             'patient_info': parsed_data['patient_info'],
             'summary': analysis['summary'],
@@ -157,7 +205,9 @@ def preview_report():
             },
             'recommendations': analysis['recommendations'],
             'filename': filename
-        })
+        }
+        
+        return jsonify(response_data)
     
     except Exception as e:
         return jsonify({'error': f'미리보기 생성 중 오류: {str(e)}'}), 500
